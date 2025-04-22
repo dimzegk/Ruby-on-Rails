@@ -90,6 +90,9 @@ GEM
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
+    bootstrap_form (5.4.0)
+      actionpack (>= 6.1)
+      activemodel (>= 6.1)
     brakeman (7.0.2)
       racc
     builder (3.3.0)
@@ -410,6 +413,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   bootstrap-sass (~> 3.4, >= 3.4.1)
+  bootstrap_form
   brakeman
   capybara
   debug
