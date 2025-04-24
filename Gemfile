@@ -64,5 +64,6 @@ group :test do
 end
 
 gem "jsbundling-rails", "~> 1.3"
-gem 'devise'
-gem 'bootstrap_form'
+gem "devise"
+gem "bootstrap_form"
+gem "jquery-rails"
