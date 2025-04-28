@@ -61,15 +61,15 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "launchy"
 end
 
 gem "jsbundling-rails", "~> 1.3"
 gem "devise"
 gem "bootstrap_form"
 gem "jquery-rails"
-gem "rspec-rails", "~> 3.6"
+gem "rspec-rails", "~> 7.1"
 gem "factory_bot_rails"
 gem "rails-controller-testing"
 gem "headless"
-gem "poltergeist"
 gem "database_cleaner"

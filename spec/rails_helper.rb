@@ -4,12 +4,24 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 
 require File.expand_path('../config/environment', __dir__)
-require 'capybara/poltergeist'
 require 'factory_bot_rails'
 require 'capybara/rspec'
+require 'capybara/rspec'
 
-Capybara.javascript_driver = :poltergeist
+require 'capybara/rspec'
+
+Capybara.default_driver = :rack_test
+
+Capybara.register_driver :selenium_chrome_headless do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome,
+    options: Selenium::WebDriver::Chrome::Options.new(args: [ 'headless', 'disable-gpu', 'window-size=1400,1400' ])
+  )
+end
+
+Capybara.javascript_driver = :selenium_chrome_headless
+
 Capybara.server = :puma
+
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
