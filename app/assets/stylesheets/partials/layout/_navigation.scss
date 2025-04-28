@@ -59,10 +59,17 @@ body {
 }
 
 .dropdown {
-  position: relative; // parent
+  position: relative;
 
   .dropdown-toggle {
-
+    color: white; 
+    background-color: $navbarColor;
+    &:hover,
+    &:focus {
+      background-color: $navbarColor !important; // ΜΕΝΕΙ ΙΔΙΟ
+      color: white !important; // ΜΕΝΕΙ ΙΔΙΟ
+    }
+  }
 
   .dropdown-menu {
     position: absolute !important;
@@ -76,13 +83,12 @@ body {
     outline: none !important;
 
     a {
-      color: black !important;
+      color: white !important;
 
       &:hover {
         background-color: white !important;
+        color:black !important;
       }
     }
-  }
-  
   }
 }
