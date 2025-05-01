@@ -18,12 +18,10 @@
 
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload", "media": "all" %>
 
-    <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "application", type: "module", "data-turbo-track": "reload" %>
   </head>
   <body>
     <%= render 'layouts/navigation' %>
     <%= yield %>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </body>
 </html>
