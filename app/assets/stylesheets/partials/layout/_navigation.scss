@@ -1,93 +1,33 @@
-nav {
-  .col-sm-5, .col-sm-7 {
-    padding: 0;
-  }
-  .navbar-header {
-    width: 100%;
-    button, .navbar-brand {
-      transition: opacity 0.15s;
-    }
-    button {
-      margin-right: 0;
-    }
-    button:hover, .navbar-brand:hover {
-      opacity: 0.8;
-    }
-  }
+.navbar {
+  margin-top: 0 !important;
 }
-.navbar-default, .navbar-toggle:focus, .collapsed, button.navbar-toggle {
-  background: $navbarColor !important;
-  border: none;
-  a {
+
+.container-fluid {
+  padding-top: 0 !important;
+}
+
+nav.navbar {
+  background-color: $navbarColor !important;
+
+  .navbar-brand,
+  .nav-link {
     color: white !important;
-  }
-}
-body {
-  margin-top: 50px;
- }
- .pc-menu {
-  margin-right: 10px;
-}
 
-.mobile-menu {
-  i {
-    color: white;
-  }
-  ul {
-    padding: 0px;
-  }
-  a {
-    display: block;
-    padding: 10px 0px 10px 25px !important;
-  }
-  a:hover {
-    background: white !important;
-    color: black !important;
-    i {
-      color: black;
-    }
-  }
-}
-
-.icon-bar {
-  background-color: white !important;
-}
-
-.active a {
-  background: $navbarColor !important;
-  border-bottom: solid 5px white;
-}
-
-.dropdown {
-  position: relative;
-
-  .dropdown-toggle {
-    color: white; 
-    background-color: $navbarColor;
-    &:hover,
-    &:focus {
-      background-color: $navbarColor !important; // ΜΕΝΕΙ ΙΔΙΟ
-      color: white !important; // ΜΕΝΕΙ ΙΔΙΟ
+    &:hover {
+      opacity: 0.8;
     }
   }
 
   .dropdown-menu {
-    position: absolute !important;
-    top: 100% !important;
-    left: 0 !important;
-    z-index: 2000 !important;
+    background-color: $navbarColor;
+    border: none;
 
-    background-color: $navbarColor !important;
-    color: black !important;
-    border: none !important;
-    outline: none !important;
-
-    a {
-      color: white !important;
+    .dropdown-item {
+      color: white;
 
       &:hover {
-        background-color: white !important;
-        color:black !important;
+        background-color: white;
+        color: black;
       }
     }
   }

@@ -1,48 +1,28 @@
-const colorSet = randomColorSet();
-const mode = Math.floor(Math.random() * 2);
+document.addEventListener("turbo:load", () => {
+  console.log("STYLE: script loaded");
 
-function styleCards() {
   const cards = document.querySelectorAll(".single-post-card");
-  console.log("🎯 Found cards:", cards.length);
+  if (!cards.length) {
+    console.log("No .single-post-card found");
+    return;
+  }
 
-  cards.forEach((card) => {
+  const colorSet = randomColorSet();
+  const mode = Math.floor(Math.random() * 2); // 0: border, 1: background
+
+  console.log("Mode:", mode);
+  console.log("Color set:", colorSet);
+
+  cards.forEach(card => {
+    const color = randomColor(colorSet);
     if (mode === 1) {
       card.classList.add("solid-color-mode");
-      card.style.backgroundColor = randomColor();
+      card.style.setProperty("background-color", color, "important");
     } else {
       card.classList.add("border-color-mode");
-      card.style.border = "5px solid " + randomColor();
+      card.style.setProperty("border", `5px solid ${color}`, "important");
     }
   });
-}
-
-function bindFeedHoverEvents() {
-  const feed = document.getElementById("feed");
-  if (!feed) return;
-
-  feed.addEventListener("mouseenter", function (e) {
-    if (e.target.classList.contains("single-post-list")) {
-      e.target.style.borderColor = randomColor();
-    }
-  }, true);
-
-  feed.addEventListener("mouseleave", function (e) {
-    if (e.target.classList.contains("single-post-list")) {
-      e.target.style.borderColor = "rgba(0, 0, 0, 0.05)";
-    }
-  }, true);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("✨ style.js loaded on DOMContentLoaded");
-  styleCards();
-  bindFeedHoverEvents();
-});
-
-document.addEventListener("turbo:load", () => {
-  console.log("🚀 style.js loaded on turbo:load");
-  styleCards();
-  bindFeedHoverEvents();
 });
 
 function randomColorSet() {
@@ -58,6 +38,6 @@ function randomColorSet() {
   return sets[Math.floor(Math.random() * sets.length)];
 }
 
-function randomColor() {
-  return colorSet[Math.floor(Math.random() * colorSet.length)];
+function randomColor(set) {
+  return set[Math.floor(Math.random() * set.length)];
 }

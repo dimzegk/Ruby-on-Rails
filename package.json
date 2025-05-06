@@ -2,15 +2,21 @@
   "name": "app",
   "private": true,
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets"
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "sass --watch --load-path=node_modules app/assets/stylesheets/application.scss:app/assets/builds/application.css",
+    "watch": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --watch",
+    "dev": "concurrently \"yarn watch\" \"yarn build:css\""
   },
   "dependencies": {
+    "@hotwired/turbo": "^8.0.13",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.5",
     "jquery": "^3.7.1",
-    "popper.js": "^1.16.1"
+    "popper.js": "^1.16.1",
+    "sass": "^1.87.0"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "esbuild": "^0.25.2"
   }
 }

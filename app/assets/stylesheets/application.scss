@@ -9,7 +9,10 @@
  * Consider organizing styles into separate files for maintainability.
  */
 // Bootstrap
-@import "bootstrap";
+
+@import "bootstrap/scss/bootstrap";
+
+
 
 // Variables
 @import "base/variables";
@@ -18,9 +21,13 @@
 @import "base/default";
 
 // Partials - main css files
-@import "partials/*";
-@import "partials/layout/*";
 @import "partials/layout/navigation";
 // Media queries for a responsive design
-@import "responsive/*";
+@import "responsive/desktop";
+@import "responsive/mobile";
 @import "partials/home_page";
+@import "partials/posts/modal";
+@import "partials/posts/home_page";
+@import "partials/signup";
+@import "partials/posts";
+
