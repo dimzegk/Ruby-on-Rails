@@ -1,4 +1,5 @@
 .single-post-card {
+  flex: 0 0 22%;
     min-height: 135px;
     max-height: 135px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
@@ -6,7 +7,7 @@
     padding: 10px;
     text-align: left;
     transition: border 0.1s, background 0.5s;
-    margin: 5px; // 🔧 Μείωσε απόσταση μεταξύ cards
+    margin: 5px; 
   
     .post-text {
       overflow: hidden;
