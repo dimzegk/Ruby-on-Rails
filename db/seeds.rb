@@ -15,14 +15,15 @@ end
 def seed_categories
   hobby = [ 'Arts', 'Crafts', 'Sports', 'Sciences', 'Collecting', 'Reading', 'Other' ]
   study = [ 'Arts and Humanities', 'Physical Science and Engineering', 'Math and Logic',
-          'Computer Science', 'Data Science', 'Economics and Finance', 'Business',
-          'Social Sciences', 'Language', 'Other' ]
+            'Computer Science', 'Data Science', 'Economics and Finance', 'Business',
+            'Social Sciences', 'Language', 'Other' ]
   team = [ 'Study', 'Development', 'Arts and Hobby', 'Other' ]
 
-  (hobby + study + team).each do |name|
-    Category.create(name: name)
+  hobby.each  { |name| Category.create(name: name, branch: "hobby") }
+  study.each  { |name| Category.create(name: name, branch: "study") }
+  team.each   { |name| Category.create(name: name, branch: "team") }
 end
-end
+
 def seed_posts
   categories = Category.all
 
