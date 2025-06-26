@@ -1,0 +1,7 @@
+<div id="contact_user" class="contact-user">
+  <%= form_with url: private_conversations_path, method: :post, data: { turbo: true } do %>
+    <%= hidden_field_tag :post_id, @post.id %>
+    <%= text_area_tag :message_body, nil, id: 'message_body', class: 'form-control' %>
+    <%= submit_tag 'Send a message', class: 'btn send-message-to-user' %>
+  <% end %>
+</div>

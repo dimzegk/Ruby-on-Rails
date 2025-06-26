@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_25_180259) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_26_192112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -35,11 +35,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_25_180259) do
   create_table "private_conversations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sender_id"
+    t.integer "recipient_id"
   end
 
   create_table "private_messages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "body"
+    t.integer "sender_id"
+    t.integer "conversation_id"
+    t.boolean "seen"
   end
 
   create_table "users", force: :cascade do |t|

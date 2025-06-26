@@ -8,4 +8,6 @@ class ApplicationController < ActionController::Base
   def redirect_if_signed_in
     redirect_to root_path if user_signed_in?
   end
+  before_action :authenticate_user!
+  helper_method :user_signed_in?, :current_user
 end

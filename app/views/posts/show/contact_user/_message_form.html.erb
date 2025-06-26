@@ -1,0 +1,14 @@
+<div id="contact_user" class="contact-user">
+  <%= form_with url: private_conversations_path, method: :post do |form| %>
+    <%= hidden_field_tag :post_id, @post.id %>
+
+    <%= text_area_tag :message_body,
+                      nil,
+                      id: 'message_body',
+                      rows: 3,
+                      class: 'form-control',
+                      placeholder: 'Send a message to the user' %>
+
+    <%= form.submit 'Send a message', class: 'btn send-message-to-user' %>
+  <% end %>
+</div>

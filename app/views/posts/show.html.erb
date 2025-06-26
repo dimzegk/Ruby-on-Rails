@@ -4,6 +4,14 @@
       <div class="posted-by">Posted by <%= @post.user.name %></div>
       <h3><%= @post.title %></h3>
       <p><%= @post.content %></p>
+
+      <% if user_signed_in? %>
+        <%= render contact_user_partial_path %>
+      <% else %>
+        <div class="contact-user">
+          <div>To contact the user you have to log in or sign up first.</div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

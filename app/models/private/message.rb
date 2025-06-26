@@ -4,6 +4,8 @@ module Private
     belongs_to :conversation,
                class_name: "Private::Conversation",
                foreign_key: :conversation_id
-    belongs_to :user
+   belongs_to :sender,
+           class_name: "User",
+           foreign_key: :sender_id
   end
 end
