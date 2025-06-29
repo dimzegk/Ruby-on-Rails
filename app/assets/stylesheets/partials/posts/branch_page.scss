@@ -123,3 +123,33 @@
   .infinite-scroll {
         display: none;
       }
+      .send-message-to-user {
+  background-color: $navbarColor;
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: black;
+    color: white;
+  }
+}
+
+.contact-user {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.contacted-user {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 12px 18px;
+  background-color: $navbarColor;
+  color: white;
+  font-weight: bold;
+  margin-top: 15px;
+}

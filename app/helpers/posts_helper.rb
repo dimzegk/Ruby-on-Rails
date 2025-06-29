@@ -22,16 +22,14 @@ end
   def update_pagination_partial_path
     @posts.next_page ? "posts/posts_pagination_page/update_pagination" : "posts/posts_pagination_page/remove_pagination"
   end
-
-  def contact_user_partial_path
-    if user_signed_in?
-      @post && @post.user != current_user ? "posts/show/contact_user" : "shared/empty_partial"
-    else
-      "posts/show/login_required"
-    end
+def contact_user_partial_path
+  if user_signed_in? && current_user.already_in_contact?(@post.user)
+    "posts/show/contact_user/already_in_touch"
+  else
+    "posts/show/contact_user/message_form/form"
   end
-
-  def leave_message_partial_path
-    @message_has_been_sent ? "posts/show/contact_user/already_in_touch" : "posts/show/contact_user/message_form"
-  end
+end
+def leave_message_partial_path
+  @message_has_been_sent ? "posts/show/contact_user/message_form/message_sent" : "posts/show/contact_user/message_form/form"
+end
 end

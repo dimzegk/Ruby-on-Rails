@@ -15,4 +15,8 @@ class User < ApplicationRecord
            foreign_key: :recipient_id,
            class_name: "Private::Conversation",
            dependent: :destroy
+           def already_in_contact?(other_user)
+  Private::Conversation.exists?(sender_id: self.id, recipient_id: other_user.id) ||
+    Private::Conversation.exists?(sender_id: other_user.id, recipient_id: self.id)
+end
 end

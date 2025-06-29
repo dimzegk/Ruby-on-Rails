@@ -3,7 +3,9 @@ window.Turbo = Turbo
 
 import $ from "jquery"
 import * as bootstrap from "bootstrap"
+import Rails from "@rails/ujs"
 
+Rails.start()
 window.$ = $
 window.jQuery = $
 window.bootstrap = bootstrap

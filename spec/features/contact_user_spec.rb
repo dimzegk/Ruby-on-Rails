@@ -16,18 +16,14 @@ RSpec.feature "Contact user", type: :feature do
     scenario "successfully sends a message to a post's author", js: true do
       visit post_path(post)
 
-      # Έλεγξε ότι η φόρμα είναι ορατή αρχικά
       expect(page).to have_selector('.contact-user form')
 
-      # Γράψε μήνυμα και στείλε
       fill_in('message_body', with: 'a' * 20)
       find('form .send-message-to-user').click
 
-      # Περίμενε να φύγει η φόρμα
       expect(page).not_to have_selector('.contact-user form', wait: 5)
 
-      # Επιβεβαίωσε το μήνυμα "You are already in touch with this user"
-      expect(page).to have_selector('.contacted-user', text: 'You are already in touch with this user')
+     expect(page).to have_selector('.contacted-user', text: 'Message has been sent')
     end
 
     scenario 'sees an already contacted message' do
