@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+<%= Gon::Base.render_data %>
     <title><%= content_for(:title) || "Collabfield" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -8,6 +9,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
+
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
@@ -25,5 +27,6 @@
   <body>
     <%= render 'layouts/navigation' %>
     <%= yield %>
+        <%= render 'layouts/application/private_conversations_windows' %>
   </body>
 </html>

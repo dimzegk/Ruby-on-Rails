@@ -1,0 +1,20 @@
+<script>
+  var conversation = $('body').find("[data-pconversation-id='<%= @conversation.id %>']");
+
+  if (conversation.length !== 1) {
+    $('body').append("<%= j(render 'private/conversations/conversation',\
+                                    conversation: @conversation,\
+                                    user: current_user) %>");
+    conversation = $('body').find("[data-pconversation-id='<%= @conversation.id %>']");
+  }
+
+  $('#pc<%= @conversation.id %> .conversation-heading').click();
+
+  setTimeout(function () {
+    $('#pc<%= @conversation.id %> .conversation-heading').click();
+  }, 1000);
+
+  $('#pc<%= @conversation.id %> form textarea').focus();
+
+  positionChatWindows();
+</script>

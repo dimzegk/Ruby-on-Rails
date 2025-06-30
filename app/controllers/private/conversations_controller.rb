@@ -7,31 +7,59 @@ module Private
       post = Post.find(params[:post_id])
       recipient_id = post.user.id
 
-      conversation = Private::Conversation.new(
+      @conversation = Private::Conversation.new(
         sender_id: current_user.id,
         recipient_id: recipient_id
       )
 
-if conversation.save
-  Private::Message.create(
-    sender_id: current_user.id,
-    conversation_id: conversation.id,
-    body: params[:message_body]
-  )
+      if @conversation.save
+        Private::Message.create(
+          sender_id: current_user.id,
+          conversation_id: @conversation.id,
+          body: params[:message_body]
+        )
 
-  @post = post
-  @message_has_been_sent = true
+        @post = post
+        @message_has_been_sent = true
 
-  respond_to do |format|
-    format.turbo_stream do
-      render turbo_stream: turbo_stream.replace(
-        "contact_user",
-        partial: "posts/show/contact_user/message_form/message_sent"
-      )
+        add_to_conversations unless already_added?
+
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.replace(
+              "contact_user",
+              partial: contact_user_partial_path
+            )
+          end
+        end
+      else
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.replace(
+              "contact_user",
+              partial: "posts/show/contact_user/message_form/fail"
+            )
+          end
+        end
+      end
     end
-  end
+  def close
+      @conversation_id = params[:id].to_i
+      session[:private_conversations].delete(@conversation_id)
 
-end
+      respond_to do |format|
+        format.js
+      end
+    end
+    private
+
+    def add_to_conversations
+      session[:private_conversations] ||= []
+      session[:private_conversations] << @conversation.id
+    end
+
+    def already_added?
+      session[:private_conversations]&.include?(@conversation.id)
     end
   end
 end
