@@ -10,11 +10,13 @@ document.addEventListener('turbo:load', function () {
       const panelBody = panel.querySelector('.panel-body');
 
       if (panelBody) {
-        if (panelBody.style.display === 'none') {
-          panelBody.style.display = 'block';
-        } else {
-          panelBody.style.display = 'none';
-        }
+        $(panelBody).toggle(100, function () {
+          const messagesVisible = $('ul', this).has('li').length;
+
+          if (!messagesVisible && $('.load-more-messages', this).length) {
+            $('.load-more-messages', this)[0].click();
+          }
+        });
       }
     }
   });

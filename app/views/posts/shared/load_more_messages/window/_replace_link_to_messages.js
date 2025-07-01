@@ -1,0 +1,2 @@
+$('#<%= @id_type %><%= @conversation.id %> .load-more-messages')
+    .replaceWith('<%= j render partial: "private/conversations/conversation/messages_list/link_to_previous_messages", locals: { conversation: @conversation } %>');
