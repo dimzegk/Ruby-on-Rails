@@ -1,0 +1,6 @@
+<% previous_message = nil %>
+<% @messages.reverse_each do |message| %>
+  <%= render partial: 'private/messages/message',
+             locals: { message: message, user: @user, previous_message: previous_message } %>
+  <% previous_message = message %>
+<% end %>

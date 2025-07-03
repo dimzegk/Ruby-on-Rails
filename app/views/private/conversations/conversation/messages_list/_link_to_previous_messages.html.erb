@@ -1,8 +1,6 @@
-<%= link_to "Load messages", 
-            private_messages_path(
-              conversation_id: conversation.id,
-              messages_to_display_offset: @messages_to_display_offset,
-              is_messenger: @is_messenger
-            ),
-            class: 'load-more-messages', 
-            remote: true %>
+<div class="load-more-messages">
+  <%= link_to "Load previous messages",
+              private_messages_path(conversation_id: conversation.id),
+              remote: true,
+              class: "load-more-messages-button" %>
+</div>

@@ -15,63 +15,60 @@ textarea {
   position: relative;
   display: block;
   padding: 0 0 5px 0;
+  background-color: white !important;
 }
 
 .conversation-window, .new_chat_window {
+  width: 400px;
   min-width: 400px;
   max-width: 400px;
   position: fixed;
   bottom: 0;
   right: 0;
   list-style-type: none;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .conversation-heading, .conversation-heading-full, .new_chat_window {
   background-color: $navbarColor !important;
   color: white !important;
   height: 40px;
+  width: 100%;
   border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+
   a {
     color: white !important;
+    text-decoration: none;
   }
-
-}
-
-.conversation-heading, .conversation-heading-full {
-  padding: 0 0 0 15px;
-  width: 360px;
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 40px;
 }
 
 .close-conversation, .add-people-to-chat, .add-user-to-contacts, .contact-request-sent {
   color: white;
-  float: right;
   height: 40px;
   width: 40px;
   font-size: 20px;
-  font-size: 2.0rem;
   border: none;
   background-color: $navbarColor;
-}
-
-.close-conversation, .add-user-to-contacts {
   text-align: center;
-  vertical-align: middle;
   line-height: 40px;
   font-weight: bold;
 }
 
-.close-conversation {
-  &:hover {
-    border: none;
-    background-color: white;
-    color: $navbarColor !important;
-  }
-  &:visited, &:focus {
-    color: white;
-  }
+.close-conversation:hover {
+  background-color: white;
+  color: $navbarColor !important;
+}
+
+.close-conversation:visited,
+.close-conversation:focus {
+  color: white;
 }
 
 .form-control[disabled] {
@@ -88,9 +85,6 @@ textarea {
 
 .loading_svg {
   display: none;
-}
-
-.loading_svg {
   text-align: center;
 }
 
@@ -100,8 +94,12 @@ textarea {
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
+  background-color: white;
+
   ul {
     padding: 0;
+    margin: 0;
+    list-style: none;
   }
 }
 
@@ -109,10 +107,10 @@ textarea {
   max-width: 300px;
   word-wrap: break-word;
   z-index: 1;
+  clear: both;
 }
 
 .message-sent {
-  position: relative;
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 5px;
@@ -131,17 +129,16 @@ textarea {
 }
 
 .messages-date {
-  width: 100%; 
-  text-align: center; 
+  width: 100%;
+  text-align: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  line-height: 1px; 
+  margin: 20px 0;
   line-height: 0.1rem;
-  margin: 20px 0 20px;
-  span {
-    background: #fff; 
-    padding: 0 10px; 
-  }
 
+  span {
+    background: white;
+    padding: 0 10px;
+  }
 }
 
 .load-more-messages {
@@ -149,7 +146,6 @@ textarea {
 }
 
 .loading-more-messages {
-  font-size: 20px;
   font-size: 2.0rem;
   padding: 10px 0;
   text-align: center;
@@ -157,11 +153,4 @@ textarea {
 
 .send-message {
   display: none;
-}
-.conversation-window {
-  list-style: none;
-  position: fixed;
-  bottom: 0;
-  width: 400px;
-  z-index: 1000;
 }

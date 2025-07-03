@@ -1,4 +1,3 @@
-# app/controllers/concerns/messages.rb
 require "active_support/concern"
 
 module Messages

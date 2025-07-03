@@ -24,14 +24,19 @@ module Private
 
         add_to_conversations unless already_added?
 
-        respond_to do |format|
-          format.turbo_stream do
-            render turbo_stream: turbo_stream.replace(
-              "contact_user",
-              partial: contact_user_partial_path
-            )
-          end
-        end
+      respond_to do |format|
+  format.turbo_stream do
+    render turbo_stream: turbo_stream.replace(
+      "contact_user",
+      partial: contact_user_partial_path
+    )
+  end
+
+  format.html do
+    render :open
+  end
+end
+
       else
         respond_to do |format|
           format.turbo_stream do

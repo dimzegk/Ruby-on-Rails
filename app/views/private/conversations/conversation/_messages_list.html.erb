@@ -1,9 +1,10 @@
-<div class="messages-list">
-  <%= render partial: load_private_messages(conversation), locals: { conversation: conversation } %>
-
-  <div class="loading-more-messages">
-    <i class="fa fa-spinner" aria-hidden="true"></i>
-  </div>
-
-  <ul></ul>
-</div>
+<ul class="messages-list">
+  <% previous_message = nil %>
+  <% conversation.messages.each do |message| %>
+    <%= render 'private/messages/message', 
+               message: message, 
+               previous_message: previous_message,
+               user: current_user %>
+    <% previous_message = message %>
+  <% end %>
+</ul>

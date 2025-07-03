@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_26_192112) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_02_174956) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,6 +37,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_192112) do
     t.datetime "updated_at", null: false
     t.integer "sender_id"
     t.integer "recipient_id"
+    t.bigint "post_id"
+    t.index ["post_id"], name: "index_private_conversations_on_post_id"
   end
 
   create_table "private_messages", force: :cascade do |t|
@@ -63,4 +65,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_192112) do
 
   add_foreign_key "posts", "categories"
   add_foreign_key "posts", "users"
+  add_foreign_key "private_conversations", "posts"
 end
