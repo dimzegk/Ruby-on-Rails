@@ -21,21 +21,19 @@ module Private
 
         @post = post
         @message_has_been_sent = true
-
         add_to_conversations unless already_added?
 
-      respond_to do |format|
-  format.turbo_stream do
-    render turbo_stream: turbo_stream.replace(
-      "contact_user",
-      partial: contact_user_partial_path
-    )
-  end
-
-  format.html do
-    render :open
-  end
-end
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.replace(
+              "contact_user",
+              partial: contact_user_partial_path
+            )
+          end
+          format.html do
+            render :open
+          end
+        end
 
       else
         respond_to do |format|
@@ -48,7 +46,18 @@ end
         end
       end
     end
-  def close
+
+def open
+  @conversation = Private::Conversation.find(params[:id])
+  add_to_conversations unless already_added?
+
+  respond_to do |format|
+    format.js { render partial: "private/conversations/open" }
+  end
+end
+
+
+    def close
       @conversation_id = params[:id].to_i
       session[:private_conversations].delete(@conversation_id)
 
@@ -56,6 +65,7 @@ end
         format.js
       end
     end
+
     private
 
     def add_to_conversations
