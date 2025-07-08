@@ -10,5 +10,12 @@ module Private
     def received(data)
   logger.debug "📩 SERVER Received: #{data.inspect}"
 end
+def send_message(data)
+  message_params = data["message"].each_with_object({}) do |el, hash|
+    hash[el["name"]] = el["value"]
+  end
+
+  Private::Message.create(message_params)
+end
   end
 end
