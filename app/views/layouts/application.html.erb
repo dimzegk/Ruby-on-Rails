@@ -8,6 +8,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%= action_cable_meta_tag %>
+
     <%= yield :head %>
 
 
@@ -29,4 +31,13 @@
     <%= yield %>
         <%= render 'layouts/application/private_conversations_windows' %>
   </body>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ JS Loaded");
+
+    const actionCableMeta = document.querySelector('meta[name="action-cable-url"]');
+    console.log("📡 ActionCable Meta:", actionCableMeta?.content);
+  });
+</script>
+
 </html>

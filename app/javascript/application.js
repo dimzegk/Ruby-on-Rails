@@ -14,5 +14,4 @@ import "./posts/style"
 import "./posts/modal"
 import "./chat_windows"
 import "./toggle_window"
-
-
+import "./channels"

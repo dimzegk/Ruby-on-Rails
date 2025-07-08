@@ -34,4 +34,5 @@ namespace :private do
   end
   resources :messages, only: [ :index, :create ]
 end
+mount ActionCable.server => "/cable"
 end
