@@ -8,4 +8,12 @@ module Private
            class_name: "User",
            foreign_key: :sender_id
   end
+    after_create_commit do
+    Private::MessageBroadcastJob.perform_later(self, previous_message)
+  end
+
+  def previous_message
+    index = conversation.messages.index(self)
+    conversation.messages[index - 1] if index && index > 0
+  end
 end

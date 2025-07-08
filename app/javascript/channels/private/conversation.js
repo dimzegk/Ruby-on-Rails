@@ -1,4 +1,6 @@
 import consumer from "../../consumer";
+import { findConv, ConvRendered, ConvMessagesVisiblity } from "../shared/conversation";
+
 
 const conversationChannel = consumer.subscriptions.create("Private::ConversationChannel", {
   connected() {
@@ -10,19 +12,51 @@ const conversationChannel = consumer.subscriptions.create("Private::Conversation
   },
 
   received(data) {
-    console.log("📩 Received:", data);
-    // εδώ μπορείς να κάνεις append το νέο μήνυμα στο DOM
-  },
-send_message: function(message) {
-  return this.perform('send_message', {
-    message: message
-  });
-}
+  console.log("📩 Received:", data);
 
-  send_message(data) {
-    this.perform("send_message", data);
+  // Μετακίνηση link στην κορυφή του μενού, αν υπάρχει
+  const menuLink = document.querySelector(`#menu-pc${data.conversation_id}`);
+  const menuList = document.querySelector("#conversations-menu ul");
+  if (menuLink && menuList) {
+    menuList.insertBefore(menuLink, menuList.firstChild);
+  }
+
+  const conversation = findConv(data.conversation_id, 'p');
+  const conversationRendered = ConvRendered(data.conversation_id, 'p');
+  const messagesVisible = ConvMessagesVisiblity(conversation);
+
+  if (data.recipient === true) {
+    const menuLink = document.querySelector(`#menu-pc${data.conversation_id}`);
+    if (menuLink) menuLink.classList.add("unseen-conv");
+
+    if (conversationRendered) {
+      if (!messagesVisible) {
+        // optional: πρόσθεσε class π.χ. για highlight unseen
+      }
+      const ul = conversation.querySelector(".messages-list ul");
+      if (ul) ul.insertAdjacentHTML("beforeend", data.message);
+    }
+
+    calculateUnseenConversations();
+  } else {
+    const ul = conversation?.querySelector("ul");
+    if (ul) ul.insertAdjacentHTML("beforeend", data.message);
+  }
+
+  if (conversation) {
+    const messagesList = conversation.querySelector(".messages-list");
+    if (messagesList) {
+      messagesList.scrollTop = messagesList.scrollHeight;
+    }
+  }
+},
+
+  send_message(message) {
+    return this.perform('send_message', {
+      message: message
+    });
   }
 });
 
-// Expose για χρήση από άλλο αρχείο
+// Expose globally so other scripts can use it
 window.conversationChannel = conversationChannel;
