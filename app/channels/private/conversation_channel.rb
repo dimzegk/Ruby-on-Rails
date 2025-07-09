@@ -18,4 +18,9 @@ def send_message(data)
   Private::Message.create(message_params)
 end
   end
+  def set_as_seen(data)
+  conversation = Private::Conversation.find(data["conv_id"].to_i)
+  messages = conversation.messages.where(seen: false)
+  messages.each { |message| message.update(seen: true) }
+end
 end

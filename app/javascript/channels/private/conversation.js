@@ -1,4 +1,4 @@
-import consumer from "../../consumer";
+import consumer from "../consumer";
 import { findConv, ConvRendered, ConvMessagesVisiblity } from "../shared/conversation";
 
 
@@ -13,8 +13,9 @@ const conversationChannel = consumer.subscriptions.create("Private::Conversation
 
   received(data) {
   console.log("📩 Received:", data);
-
-  // Μετακίνηση link στην κορυφή του μενού, αν υπάρχει
+ set_as_seen(conv_id) {
+      return this.perform("set_as_seen", { conv_id: conv_id });
+    }
   const menuLink = document.querySelector(`#menu-pc${data.conversation_id}`);
   const menuList = document.querySelector("#conversations-menu ul");
   if (menuLink && menuList) {
@@ -60,3 +61,34 @@ const conversationChannel = consumer.subscriptions.create("Private::Conversation
 
 // Expose globally so other scripts can use it
 window.conversationChannel = conversationChannel;
+// When a private conversation window is clicked
+$(document).on('click', '.conversation-window, .private-conversation', function (e) {
+  // Find the latest message inside this window
+  const latest_message = $('.messages-list ul li:last .row div', this);
+
+  // If it's a received message and hasn't been seen
+  if (latest_message.hasClass('message-received') && latest_message.hasClass('unseen')) {
+    let conv_id = $(this).find('.panel').attr('data-pconversation-id');
+
+    if (conv_id == null) {
+      conv_id = $(this).find('.messages-list').attr('data-pconversation-id');
+    }
+
+    // Mark as seen locally
+    latest_message.removeClass('unseen');
+    $('#menu-pc' + conv_id).removeClass('unseen-conv');
+
+    // Recalculate unseen count
+    calculateUnseenConversations();
+
+    // Tell ActionCable to mark as seen on server
+    if (window.App && App.private_conversation && App.private_conversation.set_as_seen) {
+      App.private_conversation.set_as_seen(conv_id);
+    }
+  }
+});
+
+// Recalculate unseen count on each Turbo visit
+$(document).on('turbo:load', function () {
+  calculateUnseenConversations();
+});

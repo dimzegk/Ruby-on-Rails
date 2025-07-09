@@ -1,43 +1,24 @@
-document.addEventListener('turbo:load', function () {
-  const panel_body = $('.panel-body');
+// when the link to open a conversation is clicked
+// and the conversation window already exists on the page
+// but it is collapsed, expand it
+document.addEventListener('turbo:load', () => {
+  $('#conversations-menu').on('click', 'li', function (e) {
+    // get conversation window's id
+    var conv_id = $(this).attr('data-id');
+    // get conversation's type
+    var conv_type = $(this).attr('data-type') === 'private' ? '#pc' : '#gc';
 
-  if (panel_body.length > 0) {
-    panel_body.toggle(100, function () {
-      const messages_visible = $('ul', this).has('li').length;
+    var conversation_window = $(conv_type + conv_id);
 
-      if (!messages_visible && $('.load-more-messages', this).length) {
-        $('.load-more-messages', this).first().trigger('click');
+    // if conversation window exists
+    if (conversation_window.length) {
+      // if window is collapsed, expand it
+      if (conversation_window.find('.panel-body').css('display') === 'none') {
+        conversation_window.find('.conversation-heading').click();
       }
-    });
-  }
 
-  let iScrollPos = 0;
-  let isLoading = false;
-  let currentLoadingIcon;
-
-  $(document).ajaxComplete(function () {
-    isLoading = false;
-    if (currentLoadingIcon !== undefined) {
-      currentLoadingIcon.hide();
+      // mark as seen by clicking it and focus textarea
+      conversation_window.find('form textarea').click().focus();
     }
-  });
-
-  $('.messages-list').off('scroll').on('scroll', function () {
-    const iCurScrollPos = $(this).scrollTop();
-
-    if (
-      iCurScrollPos < iScrollPos &&
-      iCurScrollPos < 300 &&
-      !isLoading &&
-      $('.load-more-messages', this).length
-    ) {
-      $('.load-more-messages', this).first().trigger('click');
-      isLoading = true;
-
-      currentLoadingIcon = $('.loading-more-messages', this);
-      currentLoadingIcon.show();
-    }
-
-    iScrollPos = iCurScrollPos;
   });
 });
