@@ -11,7 +11,7 @@ require 'capybara/rspec'
 require 'capybara/rspec'
 
 Capybara.default_driver = :rack_test
-
+Capybara.default_max_wait_time = 5
 Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(args: [ 'headless', 'disable-gpu', 'window-size=1400,1400' ])
