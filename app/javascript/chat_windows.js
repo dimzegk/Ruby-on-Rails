@@ -16,23 +16,19 @@ document.addEventListener('turbo:load', function () {
 });
 
 function positionChatWindows() {
-  const windows = document.querySelectorAll('.conversation-window');
-  const chatCount = windows.length;
-  const lastVisible = gon.last_visible_chat_window ?? 0;
-  const hidden = gon.hidden_chats ?? 0;
+  const windows = Array.from(document.querySelectorAll('.conversation-window'))
+    .filter(win => win.offsetParent !== null);
 
-  if (hidden + lastVisible !== chatCount && hidden === 0) {
-    gon.last_visible_chat_window = chatCount;
-  }
-
-  windows.forEach((chatWindow, i) => {
+  windows.forEach((chatWindow, index) => {
     chatWindow.style.position = 'fixed';
     chatWindow.style.bottom = '0';
-    chatWindow.style.right = `${i * 410}px`;
+    chatWindow.style.right = `${index * 410}px`;
     chatWindow.style.width = '400px';
     chatWindow.style.zIndex = '1000';
     chatWindow.style.display = 'initial';
   });
+
+  gon.last_visible_chat_window = windows.length;
 }
 
 function hideShowChatWindow() {

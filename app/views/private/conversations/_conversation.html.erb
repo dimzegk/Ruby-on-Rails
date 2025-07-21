@@ -1,8 +1,7 @@
 <% @recipient = private_conv_recipient(conversation) %>
 <% @is_messenger = false %>
 
-<li class="conversation-window" 
-    id="pc<%= conversation.id %>" 
+<li class="conversation-window" id="pc<%= conversation.id %>-<%= SecureRandom.hex(4) %>"
     data-pconversation-user-name="<%= @recipient.name %>" 
     data-turbolinks-permanent>
     
@@ -15,9 +14,9 @@
       <%= render 'private/conversations/conversation/messages_list', 
                   conversation: conversation %>
 
-      <%= render 'private/conversations/conversation/new_message_form', 
-                  conversation: conversation,
-                  user: user %>
+<%= render 'private/conversations/conversation/new_message_form', 
+            conversation: conversation,
+            user: current_user %>
     </div>
 
   </div>

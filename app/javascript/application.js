@@ -16,4 +16,4 @@ import "./chat_windows"
 import "./toggle_window"
 import "./channels"
 import "./conversations/conversation"
-import "./private/conversation";
+import "./load_messages_scroll"

@@ -2,6 +2,7 @@ module Private
   class ConversationsController < ApplicationController
     before_action :authenticate_user!
     include PostsHelper
+    include Private::ConversationsHelper
 
     def create
       post = Post.find(params[:post_id])
@@ -49,13 +50,12 @@ module Private
 
 def open
   @conversation = Private::Conversation.find(params[:id])
-  add_to_conversations unless already_added?
+  @recipient = private_conv_recipient(@conversation)
 
   respond_to do |format|
-    format.js { render partial: "private/conversations/open" }
+    format.js   # αυτό θα ψάξει το open.js.erb
   end
 end
-
 
     def close
       @conversation_id = params[:id].to_i

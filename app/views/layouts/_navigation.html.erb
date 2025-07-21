@@ -1,42 +1,44 @@
-<div class="container-fluid">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
     <%= link_to 'collabfield', root_path, class: 'navbar-brand' %>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapsible-content" aria-controls="navbar-collapsible-content" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbar-collapsible-content">
-    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-  <% if user_signed_in? %>
-    <li id="conversations-menu" class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-        <i class="fas fa-comments"></i>
-        <span id="unseen-conversations">●</span>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <%= render 'layouts/navigation/header/dropdowns/conversations/private_conversation' %>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <% if user_signed_in? %>
+          <!-- 🔸 Conversations Dropdown -->
+          <li class="nav-item dropdown" id="conversations-menu">
+            <a class="nav-link dropdown-toggle" href="#" id="conversationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-comments"></i>
+              <span id="unseen-conversations">●</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="conversationsDropdown">
+              <%= render 'layouts/navigation/header/dropdowns/conversations' %>
+            </ul>
+          </li>
+
+          <!-- 🔸 User Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <%= current_user.name %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><%= link_to 'Edit Profile', edit_user_registration_path, class: 'dropdown-item' %></li>
+              <li><%= link_to 'Logout', destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: 'dropdown-item' %></li>
+            </ul>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to 'Login', login_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Signup', signup_path, class: 'nav-link' %>
+          </li>
+        <% end %>
       </ul>
-    </li>
-    <li class="nav-item dropdown">
-      <a id="user-settings" class="nav-link dropdown-toggle" href="#" role="button"
-         data-bs-toggle="dropdown" aria-expanded="false">
-        <%= current_user.name %>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-settings">
-        <li><%= link_to 'Edit Profile', edit_user_registration_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'Logout', destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "dropdown-item" %></li>
-      </ul>
-    </li>
-  <% else %>
-    <li class="nav-item">
-      <%= link_to 'Login', login_path, class: "nav-link" %>
-    </li>
-    <li class="nav-item">
-      <%= link_to 'Signup', signup_path, class: "nav-link" %>
-    </li>
-  <% end %>
-</ul>
     </div>
-  </nav>
-</div>
+  </div>
+</nav>

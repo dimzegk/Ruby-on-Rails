@@ -1,0 +1,15 @@
+var conversationHTML = `<%= j render partial: "private/conversations/conversation", locals: { conversation: @conversation, recipient: @recipient, user: current_user } %>`;
+
+if ($(`[data-pconversation-id='<%= @conversation.id %>']`).length === 0) {
+  $('body').append(conversationHTML);
+}
+
+$('#menu-pc<%= @conversation.id %>').removeClass('unseen-conv');
+
+setTimeout(() => {
+  window.positionChatWindows?.();
+  window.hideShowChatWindow?.();
+
+  $('#pc<%= @conversation.id %> .conversation-heading').click().click();
+  $('#pc<%= @conversation.id %> textarea').focus();
+}, 100);

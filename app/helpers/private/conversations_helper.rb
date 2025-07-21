@@ -9,4 +9,12 @@ module Private::ConversationsHelper
       "shared/empty_partial"
     end
   end
+   def private_conv_seen_status(conversation)
+    last_message = conversation.messages.last
+    if last_message.present? && last_message.sender != current_user && !last_message.seen
+      "unseen-conv"
+    else
+      ""
+    end
+  end
 end
