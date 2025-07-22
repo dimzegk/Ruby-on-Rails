@@ -55,16 +55,20 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user) }
     let(:other_user) { create(:user) }
 
-    before do
-      create_list(:contact, 2) # unrelated
-      create_list(:contact, 2, accepted: true) # unrelated
+   before do
+  other_user1 = create(:user)
+  other_user2 = create(:user)
+  other_user3 = create(:user)
+  other_user4 = create(:user)
 
-      create(:contact, user_id: user.id) # pending_sent
-      create(:contact, user_id: user.id, accepted: true) # accepted_sent
+  # ο χρήστης έχει στείλει 1 pending και 1 accepted request
+  create(:contact, user: user, contact: other_user1) # pending_sent
+  create(:contact, user: user, contact: other_user2, accepted: true) # accepted_sent
 
-      create(:contact, contact_id: user.id) # pending_received
-      create(:contact, contact_id: user.id, accepted: true) # accepted_received
-    end
+  # ο χρήστης έχει λάβει 1 pending και 1 accepted request
+  create(:contact, user: other_user3, contact: user) # pending_received
+  create(:contact, user: other_user4, contact: user, accepted: true) # accepted_received
+end
 
     it 'accepted_sent_contact_requests gets only accepted requests' do
       expect(user.accepted_sent_contact_requests.count).to eq 1
