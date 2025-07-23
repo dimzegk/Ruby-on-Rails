@@ -37,4 +37,14 @@ namespace :private do
 end
 mount ActionCable.server => "/cable"
 resources :contacts, only: [ :create, :update, :destroy ]
+namespace :group do
+  resources :conversations do
+    member do
+      post :close
+      post :open
+    end
+  end
+
+  resources :messages, only: [ :index, :create ]
+end
 end
