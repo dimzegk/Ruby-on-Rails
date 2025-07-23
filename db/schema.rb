@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_23_192735) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_23_200247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_192735) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "group_conversations_users", id: false, force: :cascade do |t|
+    t.bigint "group_conversation_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["group_conversation_id", "user_id"], name: "index_gc_users_on_conversation_and_user", unique: true
+    t.index ["group_conversation_id"], name: "index_group_conversations_users_on_group_conversation_id"
+    t.index ["user_id"], name: "index_group_conversations_users_on_user_id"
   end
 
   create_table "group_messages", force: :cascade do |t|
@@ -94,6 +102,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_192735) do
 
   add_foreign_key "contacts", "users"
   add_foreign_key "contacts", "users", column: "contact_id"
+  add_foreign_key "group_conversations_users", "group_conversations"
+  add_foreign_key "group_conversations_users", "users"
   add_foreign_key "group_messages", "group_conversations", column: "conversation_id"
   add_foreign_key "group_messages", "users"
   add_foreign_key "posts", "categories"
