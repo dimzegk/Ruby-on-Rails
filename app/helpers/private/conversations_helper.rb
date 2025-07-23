@@ -83,4 +83,11 @@ module Private::ConversationsHelper
   def request_sent_by_user(contact)
     contact.user_id == current_user.id
   end
+  def create_group_conv_partial_path(contact)
+  if recipient_is_contact?(contact)
+    "private/conversations/conversation/heading/create_group_conversation"
+  else
+    "shared/empty_partial"
+  end
+end
 end
