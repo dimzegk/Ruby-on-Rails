@@ -78,4 +78,12 @@ end
   def contact(other_user)
     Contact.find_by(user_id: id, contact_id: other_user.id)
   end
+  has_and_belongs_to_many :group_conversations,
+                        class_name: "Group::Conversation",
+                        join_table: "group_conversations_users"
+
+has_many :group_messages,
+         class_name: "Group::Message",
+         foreign_key: "sender_id",
+         dependent: :destroy
 end

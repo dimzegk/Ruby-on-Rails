@@ -20,8 +20,9 @@ module Private::ConversationsHelper
     end
   end
 
-  def add_to_contacts_partial_path(contact)
-    if recipient_is_contact?
+  # ✅ Διορθωμένο: προσθήκη recipient
+  def add_to_contacts_partial_path(contact, recipient)
+    if recipient_is_contact?(recipient)
       "shared/empty_partial"
     else
       non_contact(contact)
@@ -37,7 +38,7 @@ module Private::ConversationsHelper
   end
 
   def get_contact_record(recipient)
-    Contact.find_by_users(current_user.id, recipient.id)
+  ::Contact.find_by_users(current_user.id, recipient.id)
   end
 
   def unaccepted_contact_request_partial_path(contact)
@@ -52,8 +53,8 @@ module Private::ConversationsHelper
     end
   end
 
-  def not_contact_no_request_partial_path(contact)
-    if !recipient_is_contact? && !unaccepted_contact_exists(contact)
+  def not_contact_no_request_partial_path(contact, recipient)
+    if !recipient_is_contact?(recipient) && !unaccepted_contact_exists(contact)
       "private/conversations/conversation/request_status/send_request"
     else
       "shared/empty_partial"
@@ -62,9 +63,9 @@ module Private::ConversationsHelper
 
   private
 
-  def recipient_is_contact?
+  def recipient_is_contact?(recipient)
     contacts = current_user.all_active_contacts
-    contacts.any? { |c| c.id == @recipient.id }
+    contacts.any? { |c| c.id == recipient.id }
   end
 
   def non_contact(contact)

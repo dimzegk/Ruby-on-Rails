@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_171137) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_23_192735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -30,6 +30,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_171137) do
     t.index ["contact_id"], name: "index_contacts_on_contact_id"
     t.index ["user_id", "contact_id"], name: "index_contacts_on_user_id_and_contact_id", unique: true
     t.index ["user_id"], name: "index_contacts_on_user_id"
+  end
+
+  create_table "group_conversations", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "group_messages", force: :cascade do |t|
+    t.text "content", null: false
+    t.text "seen_by"
+    t.text "added_new_users"
+    t.bigint "user_id", null: false
+    t.bigint "conversation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_group_messages_on_conversation_id"
+    t.index ["user_id"], name: "index_group_messages_on_user_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -76,6 +94,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_171137) do
 
   add_foreign_key "contacts", "users"
   add_foreign_key "contacts", "users", column: "contact_id"
+  add_foreign_key "group_messages", "group_conversations", column: "conversation_id"
+  add_foreign_key "group_messages", "users"
   add_foreign_key "posts", "categories"
   add_foreign_key "posts", "users"
   add_foreign_key "private_conversations", "posts"

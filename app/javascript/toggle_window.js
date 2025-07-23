@@ -1,6 +1,3 @@
-// when the link to open a conversation is clicked
-// and the conversation window already exists on the page
-// but it is collapsed, expand it
 document.addEventListener('turbo:load', () => {
   $('#conversations-menu').on('click', 'li', function (e) {
     // get conversation window's id
@@ -19,6 +16,31 @@ document.addEventListener('turbo:load', () => {
 
       // mark as seen by clicking it and focus textarea
       conversation_window.find('form textarea').click().focus();
+    }
+  });
+
+  // toggle window on heading click
+  $('.conversation-heading, .conversation-heading-full').on('click', function () {
+    var panel = $(this).closest('.conversation-window');
+    var panel_body = panel.find('.panel-body');
+    var conversation_heading = panel.find('.conversation-heading, .conversation-heading-full');
+
+    panel_body.slideToggle(100);
+
+    // if window is collapsed, hide conversation menu options
+    if (panel_body.css('display') === 'none') {
+      panel.find('.add-people-to-chat,\
+                  .add-user-to-contacts,\
+                  .contact-request-sent').hide();
+      conversation_heading.css('width', '360px');
+    } else {
+      // show conversation menu options
+      panel.find('.add-people-to-chat,\
+                  .add-user-to-contacts,\
+                  .contact-request-sent').show();
+      conversation_heading.css('width', '320px');
+      // focus textarea
+      panel.find('form textarea').focus();
     }
   });
 });

@@ -1,4 +1,7 @@
-<%= render add_to_contacts_partial_path(@contact) %>
+<%= render add_to_contacts_partial_path(@contact, @recipient) %>
+<%= render unaccepted_contact_request_partial_path(@contact) %>
+<%= render not_contact_no_request_partial_path(@contact, @recipient) %>
+
 <div class="<%= conv_heading_class(@contact) %>">
   <span class="contact-name-notif"><%= @recipient.name %></span>
   <%= link_to "X",
