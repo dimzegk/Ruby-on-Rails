@@ -1,26 +1,39 @@
 require 'rails_helper'
-require './app/services/order_conversations_service.rb'
 
-RSpec.describe OrderConversationsService do
-  context '#call' do
+describe OrderConversationsService do
+  describe '#call' do
     it 'returns ordered conversations in descending order' do
       user = create(:user)
 
-      # πρώτα message
-      message1 = create(:private_message)
-      conversation1 = create(:private_conversation, sender_id: user.id)
-      conversation1.messages << message1
+      # Πρώτη συνομιλία (παλαιότερη)
+      conversation1 = create(:private_conversation,
+                             sender_id: user.id,
+                             recipient: create(:user))
+      message1 = create(:private_message,
+                        conversation: conversation1,
+                        sender_id: user.id,
+                        created_at: 1.day.ago)
 
-      sleep(1) # για να αλλάξει το created_at
+      # Δεύτερη συνομιλία (μέση)
+      conversation2 = create(:group_conversation,
+                             users: [ user ])
+      message2 = create(:group_message,
+                        conversation: conversation2,
+                        user: user,
+                        created_at: 5.hours.ago)
 
-      # δεύτερο message, πιο πρόσφατο
-      message2 = create(:private_message)
-      conversation2 = create(:private_conversation, sender_id: user.id)
-      conversation2.messages << message2
+      # Τρίτη συνομιλία (πιο πρόσφατη)
+      conversation3 = create(:private_conversation,
+                             sender_id: user.id,
+                             recipient: create(:user))
+      message3 = create(:private_message,
+                        conversation: conversation3,
+                        sender_id: user.id,
+                        created_at: 1.hour.ago)
 
-      result = OrderConversationsService.new(user: user).call
+      ordered = OrderConversationsService.new(user: user).call
 
-      expect(result).to eq [ conversation2, conversation1 ]
+      expect(ordered).to eq [ conversation3, conversation2, conversation1 ]
     end
   end
 end

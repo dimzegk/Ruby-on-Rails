@@ -19,15 +19,24 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def opened_conversations_windows
-    if user_signed_in?
-      session[:private_conversations] ||= []
-      @private_conversations_windows = Private::Conversation.includes(:recipient, :messages)
-                                         .find(session[:private_conversations])
-    else
-      @private_conversations_windows = []
-    end
+def opened_conversations_windows
+  if user_signed_in?
+    session[:private_conversations] ||= []
+    session[:group_conversations] ||= []
+
+    @private_conversations_windows = Private::Conversation
+                                        .includes(:recipient, :messages)
+                                        .find(session[:private_conversations])
+
+    @group_conversations_windows = Group::Conversation
+                                       .includes(:messages)
+                                       .find(session[:group_conversations])
+  else
+    @private_conversations_windows = []
+    @group_conversations_windows = []
   end
+end
+
 
   def all_ordered_conversations
     if user_signed_in?
