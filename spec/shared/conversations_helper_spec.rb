@@ -1,3 +1,4 @@
+# spec/helpers/private/conversations_helper_spec.rb
 require 'rails_helper'
 
 RSpec.describe Private::ConversationsHelper, type: :helper do
@@ -162,7 +163,14 @@ RSpec.describe Private::ConversationsHelper, type: :helper do
       expect(helper.send(:unaccepted_contact_exists, nil)).to eq false
     end
   end
-  RSpec.describe Group::ConversationsHelper, type: :helper do
+end
+
+# -----------------------------------------------
+# spec/helpers/group/conversations_helper_spec.rb
+# -----------------------------------------------
+require 'rails_helper'
+
+RSpec.describe Group::ConversationsHelper, type: :helper do
   context '#load_group_messages_partial_path' do
     let(:conversation) { create(:group_conversation) }
 
@@ -179,3 +187,4 @@ RSpec.describe Private::ConversationsHelper, type: :helper do
       )
     end
   end
+end
