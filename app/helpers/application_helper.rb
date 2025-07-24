@@ -4,4 +4,5 @@ module ApplicationHelper
     include Private::MessagesHelper
      include Shared::MessagesHelper
      include Group::ConversationsHelper
+     include Group::MessagesHelper
 end
