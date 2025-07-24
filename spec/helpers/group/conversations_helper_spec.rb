@@ -1,44 +1,30 @@
 require 'rails_helper'
 
-# Specs in this file have access to a helper object that includes
-# the Group::ConversationsHelper. For example:
-#
-# describe Group::ConversationsHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe Group::ConversationsHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
-end
-# spec/helpers/application_helper_spec.rb
-require 'rails_helper'
+  describe '#add_people_to_group_conv_list' do
+    let(:conversation) { create(:group_conversation) }
+    let(:current_user) { create(:user) }
+    let(:user) { create(:user) }
 
-RSpec.describe ApplicationHelper, type: :helper do
-  describe '#contacts_except_recipient' do
-    it 'returns all contacts, except the opposite user of the chat' do
-      current_user = create(:user)
-      recipient = create(:user)
-      other_contacts = create_list(:user, 3)
+    before do
+      # accepted contact (διπλή εγγραφή)
+      create(:contact, user: current_user, contact: user, accepted: true)
+      create(:contact, user: user, contact: current_user, accepted: true)
+    end
 
-      # accepted contacts
-      other_contacts.each do |contact|
-        create(:contact, user: current_user, contact: contact, accepted: true)
-        create(:contact, user: contact, contact: current_user, accepted: true)
-      end
-
-      # also create a contact with recipient
-      create(:contact, user: current_user, contact: recipient, accepted: true)
-      create(:contact, user: recipient, contact: current_user, accepted: true)
-
+    it 'does NOT include a user who is already in the conversation' do
+      conversation.users << current_user
+      conversation.users << user
       allow(helper).to receive(:current_user).and_return(current_user)
 
-      result = helper.contacts_except_recipient(recipient)
+      expect(helper.add_people_to_group_conv_list(conversation)).not_to include(user)
+    end
 
-      expect(result).not_to include recipient
-      expect(result.map(&:id)).to match_array(other_contacts.map(&:id))
+    it 'includes a user who is NOT in the conversation' do
+      conversation.users << current_user
+      allow(helper).to receive(:current_user).and_return(current_user)
+
+      expect(helper.add_people_to_group_conv_list(conversation)).to include(user)
     end
   end
 end
