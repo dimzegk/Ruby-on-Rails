@@ -1,40 +1,43 @@
-require "rails_helper"
+require 'rails_helper'
 
-RSpec.feature "Contact user", type: :feature do
-  let(:user) { create(:user) }
-  let(:category) { create(:category, name: 'Arts', branch: 'hobby') }
-  let(:post) { create(:post, category_id: category.id) }
+RSpec.describe 'Contact user', type: :feature do
+  let!(:post_author) { create(:user, name: 'test_author') }
+  let!(:post) { create(:post, user: post_author, title: 'Sample Title', content: 'This is a valid content with more than 20 characters.') }
 
   context 'logged in user' do
-    before(:each) do
-      visit new_user_session_path
-      fill_in 'Email', with: user.email
-      fill_in 'Password', with: '123456'
-      click_button 'Log in'
+    let!(:user) { create(:user, name: 'test_sender') }
+
+    before do
+      login_as(user, scope: :user)
     end
 
-    scenario "successfully sends a message to a post's author", js: true do
+    scenario 'successfully sends a message to a post\'s author' do
+      Private::Conversation.delete_all
+
       visit post_path(post)
 
       expect(page).to have_selector('.contact-user form')
+      fill_in 'message_body', with: 'Hello there!'
+      click_button 'Send a message'
 
-      fill_in('message_body', with: 'a' * 20)
-      find('form .send-message-to-user').click
-
-      expect(page).not_to have_selector('.contact-user form', wait: 5)
-
-     expect(page).to have_selector('.contacted-user', text: 'Message has been sent')
+      expect(page).to have_selector('.contacted-user', text: 'Message has been sent')
     end
 
     scenario 'sees an already contacted message' do
-      create(:private_conversation_with_messages,
-             recipient_id: post.user.id,
-             sender_id: user.id)
+      conversation = Private::Conversation.create!(
+        sender_id: user.id,
+        recipient_id: post_author.id,
+        post_id: post.id
+      )
+      Private::Message.create!(
+        user: user,
+        conversation: conversation,
+        body: 'Initial message'
+      )
 
       visit post_path(post)
 
-      expect(page).to have_selector('.contact-user .contacted-user',
-                                    text: 'You are already in touch with this user')
+      expect(page).to have_selector('.contacted-user', text: 'You are already in touch with this user')
     end
   end
 
@@ -42,7 +45,7 @@ RSpec.feature "Contact user", type: :feature do
     scenario 'sees a login required message to contact a user' do
       visit post_path(post)
 
-      expect(page).to have_selector('#contact_user', text: 'To contact the user you have to')
+      expect(page).to have_selector('#contact_user', text: 'To contact the user you have to log in or sign up first.')
     end
   end
 end

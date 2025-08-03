@@ -41,11 +41,12 @@ class User < ApplicationRecord
            through: :received_contacts,
            source: :user
 
-  # === Group Conversations ===
+# === Group Conversations ===
 
-  has_and_belongs_to_many :group_conversations,
-                          class_name: "Group::Conversation",
-                          join_table: "group_conversations_users"
+has_and_belongs_to_many :group_conversations,
+                        class_name: "Group::Conversation",
+                        join_table: "group_conversations_users",
+                        association_foreign_key: "group_conversation_id"
 
   has_many :group_messages,
            class_name: "Group::Message",

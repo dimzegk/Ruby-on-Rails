@@ -1,8 +1,11 @@
 require "rails_helper"
 
 RSpec.feature "Create a new post", type: :feature do
-  let(:user) { create(:user) }
-  before(:each) { sign_in user }
+  let(:user) { create(:user) } # το password ορίζεται στον factory
+
+  before(:each) do
+    login_as(user, scope: :user)
+  end
 
   shared_examples 'user creates a new post' do |branch|
     scenario 'successfully' do

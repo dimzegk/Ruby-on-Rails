@@ -23,12 +23,18 @@ end
     @posts.next_page ? "posts/posts_pagination_page/update_pagination" : "posts/posts_pagination_page/remove_pagination"
   end
 def contact_user_partial_path
-  if user_signed_in? && current_user.already_in_contact?(@post.user)
+  if !user_signed_in?
+    puts "RETURNING login_required"
+    "posts/show/contact_user/login_required"
+  elsif current_user.already_in_contact?(@post.user)
+    puts "RETURNING already_in_touch"
     "posts/show/contact_user/already_in_touch"
   else
+    puts "RETURNING message_form"
     "posts/show/contact_user/message_form/form"
   end
 end
+
 def leave_message_partial_path
   @message_has_been_sent ? "posts/show/contact_user/message_form/message_sent" : "posts/show/contact_user/message_form/form"
 end
