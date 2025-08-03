@@ -1,4 +1,7 @@
 class Group::ConversationsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_gon_data, only: [ :create, :open ]
+
   def create
     @conversation = create_group_conversation
     add_to_conversations unless already_added?
@@ -11,6 +14,7 @@ class Group::ConversationsController < ApplicationController
   def open
     @conversation = Group::Conversation.find(params[:id])
     add_to_conversations unless already_added?
+
     respond_to do |format|
       format.js { render partial: "group/conversations/open" }
     end
@@ -26,6 +30,11 @@ class Group::ConversationsController < ApplicationController
   end
 
   private
+
+  def set_gon_data
+    gon.group_conversations = current_user.group_conversations.pluck(:id)
+    gon.user_id = current_user.id
+  end
 
   def add_to_conversations
     session[:group_conversations] ||= []
