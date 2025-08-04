@@ -1,0 +1,5 @@
+$('.messenger .conversation').replaceWith('<div class="conversation private-conversation"></div>');
+$('.messenger .conversation').append("<%= j(
+  render partial: 'messengers/private_conversation',
+         locals: { conversation: @conversation, user: current_user }
+) %>");
