@@ -1,15 +1,38 @@
-require 'rails_helper'
+require "rails_helper"
 
-# Specs in this file have access to a helper object that includes
-# the MessengersHelper. For example:
-#
-# describe MessengersHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
-RSpec.describe MessengersHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+RSpec.describe Shared::MessagesHelper, type: :helper do
+  describe "#autoload_messenger_messages" do
+    context "when in messenger and previous messages exist" do
+      before do
+        assign(:is_messenger, "true")
+        assign(:messages_to_display_offset, 5)
+      end
+
+      it "returns load_previous_messages partial path" do
+        expect(helper.autoload_messenger_messages).to eq("shared/load_more_messages/messenger/load_previous_messages")
+      end
+    end
+
+    context "when in messenger and no previous messages exist" do
+      before do
+        assign(:is_messenger, "true")
+        assign(:messages_to_display_offset, 0)
+      end
+
+      it "returns remove_previous_messages_link partial path" do
+        expect(helper.autoload_messenger_messages).to eq("shared/load_more_messages/messenger/remove_previous_messages_link")
+      end
+    end
+
+    context "when not in messenger" do
+      before do
+        assign(:is_messenger, "false")
+        assign(:messages_to_display_offset, 10)
+      end
+
+      it "returns shared/empty_partial" do
+        expect(helper.autoload_messenger_messages).to eq("shared/empty_partial")
+      end
+    end
+  end
 end
