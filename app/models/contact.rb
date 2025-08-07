@@ -19,4 +19,5 @@ class Contact < ApplicationRecord
   def accepted?
     accepted
   end
+  after_create_commit { ContactRequestBroadcastJob.perform_later(self) }
 end
