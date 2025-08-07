@@ -2,3 +2,15 @@
   <%= render partial: "layouts/navigation/header/dropdowns/conversations/private_conversation",
              locals: { conversation: conversation, user_id: current_user.id } %>
 <% end %>
+
+<!-- Contact Requests Dropdown -->
+<li class="dropdown">
+  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+    <i class="fa fa-user-o" aria-hidden="true">
+      <span id="unresponded-contact-requests"></span>
+    </i>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <%= render nav_contact_requests_partial_path %>
+  </ul>
+</li>

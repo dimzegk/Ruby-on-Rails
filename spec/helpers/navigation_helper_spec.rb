@@ -63,4 +63,34 @@ RSpec.describe NavigationHelper, type: :helper do
       )
     end
   end
+
+  describe '#nav_contact_requests_partial_path' do
+    let(:user) { create(:user) }
+
+    context 'when there are pending contact requests' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(user).to receive(:pending_received_contact_requests).and_return([ build_stubbed(:user) ])
+      end
+
+      it 'returns the requests partial path' do
+        expect(helper.nav_contact_requests_partial_path).to eq(
+          'layouts/navigation/header/dropdowns/contact_requests/requests'
+        )
+      end
+    end
+
+    context 'when there are no pending contact requests' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(user).to receive(:pending_received_contact_requests).and_return([])
+      end
+
+      it 'returns the no_requests partial path' do
+        expect(helper.nav_contact_requests_partial_path).to eq(
+          'layouts/navigation/header/dropdowns/contact_requests/no_requests'
+        )
+      end
+    end
+  end
 end
