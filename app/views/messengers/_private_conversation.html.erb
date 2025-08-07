@@ -2,7 +2,9 @@
 <% @contact       = get_contact_record(@recipient) %>
 <% @is_messenger  = true %>
 
-<%= render 'private/conversations/conversation/request_status' %>
+<%= render partial: 'private/conversations/conversation/request_status',
+           locals: { contact: @contact, recipient: @recipient } %>
+
 
 <%= render 'messengers/private_conversation/details' %>
 

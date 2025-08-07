@@ -18,3 +18,4 @@ import "./channels"
 import "./conversations/conversation"
 import "./load_messages_scroll"
 import "./options"
+import "./messenger/auto_load_previous";

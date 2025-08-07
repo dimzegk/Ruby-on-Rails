@@ -3,7 +3,7 @@
 
 <li id="menu-pc<%= conversation.id %>" class="<%= seen_status %>">
   <%= link_to recipient.name,
-              get_private_conversation_path(id: recipient.id),
-              data: { turbo: false },  /* για να έρθει JS (.js.erb) */
-              remote: true %>
+              get_private_conversation_path(id: recipient.id, format: :js),
+              remote: true,
+              data: { turbo: false } %>
 </li>
