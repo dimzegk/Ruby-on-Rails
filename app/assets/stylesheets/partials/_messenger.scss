@@ -90,11 +90,19 @@
   }
 }
 .smaller-screen-link {
-  display: none; // default: hidden on desktop
+  display: none !important; // default: hidden on desktop
+}
+
+.larger-screen-link {
+  display: inline !important; // default: visible on desktop
 }
 
 @media screen and (max-width: 767px) {
   .smaller-screen-link {
-    display: inline !important;
+    display: inline !important; // show on mobile
+  }
+
+  .larger-screen-link {
+    display: none !important; // hide on mobile
   }
 }

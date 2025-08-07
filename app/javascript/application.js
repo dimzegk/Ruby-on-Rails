@@ -19,3 +19,4 @@ import "./conversations/conversation"
 import "./load_messages_scroll"
 import "./options"
 import "./messenger/auto_load_previous";
+import "./messenger/mobile_view"
