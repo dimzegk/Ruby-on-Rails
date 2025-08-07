@@ -1,0 +1,2 @@
+$('.conversation').replaceWith('<div class="conversation group-conversation"></div>');
+$('.conversation').append("<%= j(render 'messengers/group_conversation', conversation: @conversation) %>");
