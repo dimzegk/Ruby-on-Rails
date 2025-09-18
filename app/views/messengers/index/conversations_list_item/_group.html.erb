@@ -1,0 +1,9 @@
+<li class="list-group-item p-0">
+  <%= link_to get_group_conversation_path(group_conversation_id: conversation.id, format: :js, _t: Time.current.to_i),
+              class: "list-group-item-action px-3 py-2 d-flex align-items-center gap-2",
+              remote: true,
+              data: { turbo: false } do %>
+    <i class="fa-solid fa-users"></i>
+    <span class="text-truncate"><%= conversation.name %></span>
+  <% end %>
+</li>

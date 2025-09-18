@@ -1,33 +1,162 @@
-<div class="container-fluid">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <%= link_to 'collabfield', root_path, class: 'navbar-brand' %>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark app-navbar">
+  <div class="container-fluid">
+    <%= link_to 'Post it!', root_path, class: 'navbar-brand fw-semibold' %>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapsible-content" aria-controls="navbar-collapsible-content" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#appNavbar"
+            aria-controls="appNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbar-collapsible-content">
+    <div class="collapse navbar-collapse" id="appNavbar">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <% if user_signed_in? %>
-          <li class="nav-item dropdown">
-            <a id="user-settings" class="nav-link dropdown-toggle" href="#" role="button"
+          <%= turbo_stream_from "u#{current_user.id}:nav" %>
+
+          <% is_messenger = (controller.controller_name == "messengers") %>
+
+          <% unless is_messenger %>
+            <!-- Conversations -->
+            <li class="nav-item dropdown" id="conversations-menu">
+              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
+                 id="conversationsDropdown" role="button"
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-comments"></i>
+                <span class="badge rounded-pill bg-danger d-none"
+                      id="unseen-conversations"></span>
+              </a>
+
+              <div class="dropdown-menu dropdown-menu-end p-0 app-dd"
+                   aria-labelledby="conversationsDropdown" data-bs-auto-close="outside">
+                <div class="dropdown-header fw-semibold small text-uppercase px-3 py-2">
+                  Conversations
+                </div>
+
+                <div class="dropdown-scroller">
+                  <ul class="list-unstyled mb-0" id="conversations-list">
+                    <%= render 'layouts/navigation/header/dropdowns/conversations' %>
+                  </ul>
+                </div>
+
+                <div class="dropdown-divider mb-0"></div>
+
+                <div class="px-2 py-2">
+                  <%= link_to 'Open Messenger', messenger_path,
+                              class: 'btn btn-primary w-100 btn-sm' %>
+                </div>
+              </div>
+            </li>
+          <% end %>
+          <% begin
+               reqs = []
+               if defined?(Contact)
+                 cols = Contact.column_names rescue []
+                 scope = Contact.where(receiver_id: current_user.id)
+                 if cols.include?("accepted")
+                   reqs = scope.where(accepted: [false, nil])
+                 elsif cols.include?("status")
+                   reqs = scope.where(status: "pending")
+                 else
+                   reqs = Contact.none
+                 end
+               end
+               req_count = reqs.respond_to?(:count) ? reqs.count : reqs.to_a.size
+             rescue
+               reqs = []
+               req_count = 0
+             end %>
+
+          <li class="nav-item dropdown ms-2" id="requests-menu">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
+               id="requestsDropdown" role="button"
                data-bs-toggle="dropdown" aria-expanded="false">
-              <%= current_user.name %>
+              <i class="fa-regular fa-user"></i>
+              <span class="badge rounded-pill bg-danger <%= 'd-none' if req_count.zero? %>"
+                    id="pending-requests-badge"><%= req_count if req_count.positive? %></span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-settings">
-              <li><%= link_to 'Edit Profile', edit_user_registration_path, class: "dropdown-item" %></li>
-              <li><%= link_to 'Logout', destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "dropdown-item" %></li>
+
+            <div class="dropdown-menu dropdown-menu-end p-0 app-dd"
+                 aria-labelledby="requestsDropdown" data-bs-auto-close="outside">
+              <div class="dropdown-header fw-semibold small text-uppercase px-3 py-2">
+                Friend requests
+              </div>
+
+              <div class="dropdown-scroller">
+                <ul class="list-unstyled mb-0" id="contact-requests-list">
+                  <% if req_count.zero? %>
+                    <li class="px-3 py-3 text-muted">No pending requests</li>
+                  <% else %>
+                    <% reqs.limit(50).each do |req| %>
+                      <% sender =
+                           if req.respond_to?(:sender) && req.sender.present?
+                             req.sender
+                           else
+                             User.find_by(id: req.try(:sender_id))
+                           end %>
+                      <li class="px-3 py-2 border-bottom" id="<%= dom_id(req, :request_row) %>">
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                          <div>
+                            <div class="fw-semibold"><%= sender&.name || "User ##{sender&.id || '-'}" %></div>
+                            <div class="text-muted small">sent you a contact request</div>
+                          </div>
+                          <div class="d-flex gap-2">
+                            <%= button_to "Accept",
+                                  contact_path(id: sender&.id),
+                                  method: :put,
+                                  params: { target: dom_id(req, :request_row) },
+                                  class: "btn btn-sm btn-outline-success",
+                                  data: { turbo: true, disable_with: "…" } %>
+
+                            <%= button_to "Decline",
+                                  contact_path(id: sender&.id),
+                                  method: :delete,
+                                  params: { target: dom_id(req, :request_row) },
+                                  class: "btn btn-sm btn-outline-danger",
+                                  data: { turbo: true, disable_with: "…" } %>
+                          </div>
+                        </div>
+                      </li>
+                    <% end %>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item dropdown ms-2">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
+               id="profileDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-regular fa-user"></i>
+              <span><%= current_user&.name || 'Profile' %></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <% if defined?(user_path) && current_user %>
+                <li><%= link_to 'My profile', user_path(current_user), class: 'dropdown-item' %></li>
+              <% end %>
+
+              <% if defined?(settings_path) %>
+                <li><%= link_to 'Settings', settings_path, class: 'dropdown-item' %></li>
+              <% else %>
+                <li><%= link_to 'Settings', edit_user_registration_path, class: 'dropdown-item' %></li>
+              <% end %>
+
+              <li><hr class="dropdown-divider"></li>
+              <li><%= link_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item' %></li>
             </ul>
           </li>
+
         <% else %>
           <li class="nav-item">
-            <%= link_to 'Login', login_path, class: "nav-link" %>
+            <%= link_to 'Sign in', new_user_session_path, class: 'nav-link' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'Signup', signup_path, class: "nav-link" %>
-          </li>
+            <%= link_to 'Sign up', new_user_registration_path, class: 'nav-link' %></li>
         <% end %>
       </ul>
     </div>
-  </nav>
-</div>
+  </div>
+</nav>

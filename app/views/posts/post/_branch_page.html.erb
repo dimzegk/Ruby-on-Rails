@@ -1,0 +1,11 @@
+<% @post = post %>
+
+<div class="col-12 col-sm-6 col-lg-4 col-xl-3 branch-post-card" id="post-<%= post.id %>">
+  <%= link_to post_path(post), class: "card h-100 text-reset text-decoration-none" do %>
+    <div class="card-body d-grid gap-2">
+      <div class="text-muted small">Posted by <%= post.user.name %></div>
+      <h3 class="h5 m-0"><%= post.title %></h3>
+      <p class="mb-0"><%= truncate(post.content, length: 140) %></p>
+    </div>
+  <% end %>
+</div>

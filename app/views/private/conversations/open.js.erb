@@ -1,0 +1,33 @@
+(function () {
+  // render του παραθύρου αν λείπει
+  var conversationHTML = `<%= j render partial: "private/conversations/conversation",
+                                 locals: { conversation: @conversation, recipient: @recipient, user: current_user } %>`;
+
+  if ($("[data-pconversation-id='<%= @conversation.id %>']").length === 0) {
+    $("body").append(conversationHTML);
+  }
+
+  $("#menu-pc<%= @conversation.id %>").removeClass("unseen-conv");
+
+
+  var $win = $("[data-pconversation-id='<%= @conversation.id %>']").closest(".conversation-window");
+
+
+  setTimeout(function () {
+    if (window.positionChatWindows) window.positionChatWindows();
+    if (window.hideShowChatWindow) window.hideShowChatWindow();
+
+    // αν το σώμα είναι κρυφό (αν κάνεις toggle με header), άνοιξέ το
+    var $heading = $win.find(".conversation-heading, .conversation-heading-full");
+    var $body    = $win.find(".panel-body");
+    if ($heading.length && $body.is(":hidden")) $heading.trigger("click");
+
+    // scroll στο τέλος
+    var list = $win.find(".messages-list")[0];
+    if (list) list.scrollTop = list.scrollHeight;
+
+    // focus στο textarea
+    var $ta = $win.find("textarea");
+    if ($ta.length) $ta.trigger("focus");
+  }, 0);
+})();

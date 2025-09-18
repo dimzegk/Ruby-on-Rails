@@ -1,0 +1,11 @@
+// Replace the CTA container with freshly rendered state (popup & messenger)
+(function() {
+  var target = "<%= j(params[:target].presence || dom_id(@other, :contact_cta)) %>";
+  var html   = "<%= j render('contacts/state', other: @other, current_user: current_user) %>";
+
+  var el = document.getElementById(target);
+  if (el) {
+    el.insertAdjacentHTML('afterend', html);
+    el.remove();
+  }
+})();

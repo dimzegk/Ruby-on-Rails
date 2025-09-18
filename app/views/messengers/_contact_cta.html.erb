@@ -1,0 +1,11 @@
+<%# locals: conversation:, current_user: %>
+<% other =
+     if conversation.is_a?(Private::Conversation) && conversation.respond_to?(:opposed_user)
+       conversation.opposed_user(current_user)
+     end %>
+
+<% if other.present? %>
+  <div id="ms_pc<%= conversation.id %>_contact_cta">
+    <%= render "contacts/state", other: other, current_user: current_user %>
+  </div>
+<% end %>

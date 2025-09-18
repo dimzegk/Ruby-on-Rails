@@ -1,43 +1,30 @@
-.single-post-card {
-    min-height: 135px;
-    max-height: 135px;
-    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-    color: black;
-    padding: 10px;
-    text-align: left;
-    transition: border 0.1s, background 0.5s;
-    margin: 5px; // 🔧 Μείωσε απόσταση μεταξύ cards
-  
-    .post-text {
-      overflow: hidden;
-      text-align: center;
-    }
-  
-    a, a:active, a:hover {
-      color: black;
-    }
-  
-    &:hover {
-      cursor: pointer;
-      background: white;
-      box-shadow: none;
-      border-radius: 1%;
-    }
-  }
-  
-  .post-content {
-    display: block;
-  }
-  
-  .solid-color-mode {
-    .post-text {
-      background-color: inherit !important;
-      padding: 10px;
-      border-radius: 25px;
-    }
-  }
-  
-  .border-color-mode {
-    background-color: inherit !important;
-  }
-  
+
+#main-content .row {
+  row-gap: 1rem;
+  column-gap: 1rem;
+}
+
+
+.post-card {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.post-card-body { display: grid; gap: 6px; }
+
+.post-meta   { font-size: .85rem; color: #6b7280; }
+.post-title  { font-size: 1.1rem; margin: 0; color: #111; }
+.post-excerpt{ font-size: .95rem; color: #374151; margin: 0; }
+
+.post-card-footer { margin-top: auto; }

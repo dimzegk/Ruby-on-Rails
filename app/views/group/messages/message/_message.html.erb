@@ -1,0 +1,32 @@
+<li data-message-id="<%= message.id %>">
+  <% time_str = (defined?(l) ? l(message.created_at, format: :time) : message.created_at.strftime('%H:%M')) rescue message.created_at.strftime('%H:%M') %>
+
+
+  <% text =
+       if message.respond_to?(:content) then message.content
+       elsif message.respond_to?(:body) then message.body
+       else message.try(:message)
+       end %>
+
+
+  <% system_msg =
+       (message.respond_to?(:kind) && message.kind.to_s == "system") ||
+       (message.respond_to?(:system?) && message.system?) ||
+       message.user_id.blank? ||
+       text.to_s.match?(/\b(added by|removed by|invited|joined|left|προστέθηκε από|αφαιρέθηκε από|προσκαλέστηκε|μπήκε|έφυγε)\b/i)
+  %>
+
+  <% if system_msg %>
+    <div class="system-notice"><%= h(text.to_s) %></div>
+  <% else %>
+    <div class="row">
+      <div class="<%= (message.user_id == user.id) ? 'message-sent' : 'message-received' %>"
+           data-time="<%= time_str %>">
+        <% if message.user_id != user.id %>
+          <small class="text-muted d-block"><%= message.user.try(:name) %></small>
+        <% end %>
+        <%= simple_format(h(text.to_s)) %>
+      </div>
+    </div>
+  <% end %>
+</li>

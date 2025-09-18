@@ -1,18 +1,26 @@
 @media screen and (max-width: 767px) {
-  #side-menu {
+  .conversation-window {
+    display: block !important;
+    width: 100vw;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+
+  #conversations-menu .dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: auto;
+    width: 100vw;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .bigger-screen-link, .brand-bigger-screen {
     display: none !important;
   }
 
-  .pc-menu {
-    display: none !important;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .solid-color-mode,
-  .border-color-mode {
-    .post-text {
-      font-size: 16px;
-    }
+  .smaller-screen-link {
+    padding: 10px 20px !important;
   }
 }

@@ -1,0 +1,20 @@
+<div class="new-post container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8 col-xl-7">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Create a new post</span>
+        </div>
+
+        <div class="card-body">
+          <%= render 'posts/new/post_form' %>
+        </div>
+
+        <div class="card-footer text-end">
+          <%= link_to 'Back', request.referer.presence || root_path, class: 'btn btn-outline-secondary btn-sm' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

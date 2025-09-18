@@ -1,0 +1,14 @@
+<div class="contact-user">
+  <%= form_with url: private_conversations_path, method: :post, remote: true do |form| %>
+    <%= hidden_field_tag :post_id, @post.id %>
+
+    <%= text_area_tag :message_body,
+                      nil,
+                      id: 'message_body',  # ✨ αυτό ψάχνει το test!
+                      rows: 3,
+                      class: 'form-control',
+                      placeholder: 'Send a message to the user' %>
+
+    <%= form.submit "Contact this user", class: "btn btn-primary send-message-to-user" %>
+  <% end %>
+</div>

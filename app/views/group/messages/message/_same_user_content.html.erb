@@ -1,0 +1,6 @@
+<span class="message-time">
+  <%= message.created_at.respond_to?(:strftime) ? message.created_at.strftime('%H:%M') : message.created_at.to_s %>
+</span>
+<p class="message-content">
+  <%= message.content %>
+</p>

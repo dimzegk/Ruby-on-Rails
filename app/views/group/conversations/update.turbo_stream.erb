@@ -1,0 +1,17 @@
+
+<%= turbo_stream.replace "gc#{@conversation.id}-title" do %>
+  <%= truncate(@conversation.name, length: 40) %>
+<% end %>
+
+<%= turbo_stream.append "gc#{@conversation.id}-messages" do %>
+  <div class="system-notice" role="status" aria-live="polite">
+    <%= h(@added_user&.name || "User") %> added by <%= h(@added_by&.name || "system") %>
+  </div>
+<% end %>
+<%= turbo_stream.replace "gc#{@conversation.id}-title" do %>
+  <%= truncate(@conversation.name, length: 40) %>
+<% end %>
+
+<%= turbo_stream.replace "convitem-#{@conversation.id}-title" do %>
+  <%= @conversation.name %>
+<% end %>

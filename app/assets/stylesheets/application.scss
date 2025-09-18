@@ -1,28 +1,17 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
-// Bootstrap
 
 @import "bootstrap/scss/bootstrap";
 
 
 
-// Variables
+
 @import "base/variables";
 
-// Default styles
+
 @import "base/default";
 
-// Partials - main css files
+
 @import "partials/layout/navigation";
-// Media queries for a responsive design
+
 @import "responsive/desktop";
 @import "responsive/mobile";
 @import "partials/home_page";
@@ -31,4 +20,9 @@
 @import "partials/signup";
 @import "partials/posts";
 @import "partials/posts/show";
+@import "partials/posts/branch_page";
+@import "partials/conversation_window";
+@import "components/group_conversations";
+@import "group/messages";
+@import "partials/messenger";
 

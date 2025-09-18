@@ -1,0 +1,22 @@
+<% branch_path_name = "#{params[:action]}_posts_path" %>
+
+<div class="card branch-categories">
+  <div class="card-body">
+    <ul class="categories-list-pills">
+      <li>
+        <%= render all_categories_button_partial_path,
+                   branch_path_name: branch_path_name %>
+      </li>
+      <% @categories.each do |category| %>
+        <li>
+          <%= link_to category.name,
+                      send(branch_path_name, category: category.name),
+                      class: [
+                        "badge rounded-pill text-bg-light category-pill",
+                        ("active" if params[:category] == category.name)
+                      ].compact.join(" ") %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

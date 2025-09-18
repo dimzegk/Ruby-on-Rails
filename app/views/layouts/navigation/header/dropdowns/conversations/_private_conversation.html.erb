@@ -1,0 +1,21 @@
+<% recipient    = private_conv_recipient(conversation) %>
+<% seen_status  = private_conv_seen_status(conversation) %>
+
+<li id="menu-pc<%= conversation.id %>"
+    class="<%= seen_status %>"
+    data-id="<%= conversation.id %>"
+    data-type="private">
+
+
+  <%= link_to recipient.name,
+              open_private_conversation_path(conversation, format: :js),
+              method: :post,
+              remote: true,
+              data: { turbo: false },
+              class: 'dropdown-item navlink-desktop-popup' %>
+
+
+  <%= link_to recipient.name,
+              open_messenger_path(id: recipient.id, type: 'private'),
+              class: 'dropdown-item navlink-mobile-messenger' %>
+</li>

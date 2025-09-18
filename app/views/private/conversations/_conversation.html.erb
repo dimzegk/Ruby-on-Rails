@@ -1,0 +1,59 @@
+<li id="pc<%= conversation.id %>"
+    class="conversation-window panel panel-default"
+    data-pconversation-id="<%= conversation.id %>"
+    data-pconversation-user-name="<%= private_conv_recipient(conversation)&.name %>">
+
+  <%= turbo_stream_from "u#{current_user.id}:pc#{conversation.id}" %>
+
+  <div class="conversation-heading d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+      <i class="fa-regular fa-user"></i>
+      <% recipient = private_conv_recipient(conversation) %>
+      <strong id="pc<%= conversation.id %>-title"><%= recipient&.name || "Conversation" %></strong>
+    </div>
+
+    <%= link_to "×",
+                close_private_conversation_path(conversation),
+                method: :post,
+                remote: true,
+                class: "close-conversation",
+                title: "Close" %>
+  </div>
+
+  <div class="panel-body">
+    <%# (προαιρετικό) banner/cta για contacts — αν το χρησιμοποιείς: %>
+    <%= render "private/conversations/conversation/request_status",
+               contact: get_contact_record(recipient),
+               recipient: recipient,
+               conversation: conversation %>
+
+    <div class="messages-list" id="pc<%= conversation.id %>-messages">
+      <ul id="pc<%= conversation.id %>-messages_ul">
+        <% conversation.messages.order(:created_at).each do |message| %>
+          <%= render "private/messages/message",
+                     message: message,
+                     user:    current_user %>
+        <% end %>
+      </ul>
+    </div>
+
+    <form id="pc<%= conversation.id %>-form"
+          action="<%= private_conversation_messages_path(conversation) %>"
+          method="post"
+          class="chat-composer"
+          data-turbo="true"
+          autocomplete="off">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+
+      <!-- Το Private::MessagesController περιμένει message[body] -->
+      <textarea name="message[body]"
+                id="pc<%= conversation.id %>-input"
+                rows="2"
+                class="form-control"
+                placeholder="Write a message…"
+                required></textarea>
+
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+</li>

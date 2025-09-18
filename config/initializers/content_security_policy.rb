@@ -1,25 +1,25 @@
-# Be sure to restart your server when you modify this file.
+# config/initializers/content_security_policy.rb
+Rails.application.configure do
+  config.content_security_policy do |policy|
+    policy.default_src :self, :https
+    policy.font_src    :self, :https, :data
+    policy.img_src     :self, :https, :data
+    policy.object_src  :none
 
-# Define an application-wide content security policy.
-# See the Securing Rails Applications Guide for more information:
-# https://guides.rubyonrails.org/security.html#content-security-policy-header
+    # Dev-friendly: επιτρέπουμε inline & eval για να παίζουν GON, inline scripts κλπ.
+    policy.script_src  :self, :https, :unsafe_inline, :unsafe_eval
+    policy.style_src   :self, :https, :unsafe_inline
 
-# Rails.application.configure do
-#   config.content_security_policy do |policy|
-#     policy.default_src :self, :https
-#     policy.font_src    :self, :https, :data
-#     policy.img_src     :self, :https, :data
-#     policy.object_src  :none
-#     policy.script_src  :self, :https
-#     policy.style_src   :self, :https
-#     # Specify URI for violation reports
-#     # policy.report_uri "/csp-violation-report-endpoint"
-#   end
-#
-#   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
-#   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-#   config.content_security_policy_nonce_directives = %w(script-src style-src)
-#
-#   # Report violations without enforcing the policy.
-#   # config.content_security_policy_report_only = true
-# end
+    # WebSockets για ActionCable στον dev
+    policy.connect_src :self, :https, :http,
+                       "ws://localhost:3000",
+                       "ws://127.0.0.1:3000"
+  end
+
+  # ΜΗ βάζεις nonces σε dev — απλά άστα απενεργοποιημένα:
+  # config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  # config.content_security_policy_nonce_directives = %w(script-src style-src)
+
+  # Εναλλακτικά, για λίγο, μπορείς να το βάλεις μόνο report (δεν μπλοκάρει):
+  # config.content_security_policy_report_only = true
+end

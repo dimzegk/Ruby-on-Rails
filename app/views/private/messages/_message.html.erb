@@ -1,0 +1,45 @@
+<li data-message-id="<%= message.id %>">
+  <% time_str =
+       (defined?(l) ? l(message.created_at, format: :time) : message.created_at.strftime('%H:%M')) \
+       rescue message.created_at.strftime('%H:%M') %>
+
+
+  <% text =
+       if message.respond_to?(:content) then message.content
+       elsif message.respond_to?(:body)   then message.body
+       else message.try(:message)
+       end %>
+
+
+  <% sender_id =
+       if    message.respond_to?(:user_id)    then message.user_id
+       elsif message.respond_to?(:sender_id)  then message.sender_id
+       elsif message.respond_to?(:author_id)  then message.author_id
+       elsif message.respond_to?(:user) && message.user.present? then message.user.id
+       else  nil
+       end %>
+
+  <% sent = (sender_id == user.id) %>
+
+
+  <% system_msg =
+       (message.respond_to?(:kind)     && message.kind.to_s == "system") ||
+       (message.respond_to?(:system?)  && message.system?)                ||
+       sender_id.blank?                                                    ||
+       text.to_s.match?(/\b(added by|removed by|invited|joined|left|προστέθηκε από|αφαιρέθηκε από|προσκαλέστηκε|μπήκε|έφυγε)\b/i)
+  %>
+
+  <% if system_msg %>
+    <div class="system-notice"><%= h(text.to_s) %></div>
+  <% else %>
+    <div class="<%= sent ? 'message-sent' : 'message-received' %>"
+         data-time="<%= time_str %>">
+      <% unless sent %>
+        <small class="text-muted d-block">
+          <%= (message.try(:user)&.name || User.find_by(id: sender_id)&.name) %>
+        </small>
+      <% end %>
+      <%= simple_format(h(text.to_s)) %>
+    </div>
+  <% end %>
+</li>

@@ -1,0 +1,20 @@
+<div class="panel-heading conversation-heading">
+  <strong id="gc<%= conversation.id %>-title">
+    <%= truncate(conversation.name, length: 40) %>
+  </strong>
+</div>
+
+<!-- Close the conversation button -->
+<%= link_to "×",
+            close_group_conversation_path(conversation),
+            method: :post,
+            remote: true,
+            data: { type: :script, turbo: false },
+            class: "btn-close ms-auto",
+            aria: { label: "Close" } %>
+
+<div class="add-people-to-chat" title="Add people to chat">
+  <div>
+    <i class="fa fa-plus" aria-hidden="true" data-bs-toggle="dropdown"></i>
+  </div>
+</div>

@@ -11,7 +11,7 @@ require 'capybara/rspec'
 require 'capybara/rspec'
 
 Capybara.default_driver = :rack_test
-
+Capybara.default_max_wait_time = 5
 Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(args: [ 'headless', 'disable-gpu', 'window-size=1400,1400' ])
@@ -40,7 +40,7 @@ require 'rspec/rails'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -54,6 +54,11 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include FactoryBot::Syntax::Methods
+  config.include Warden::Test::Helpers
+  config.include AuthHelpers, type: :feature
+   config.include UiHelpers, type: :feature
+  config.before(:suite) { Warden.test_mode! }
+  config.after(:each) { Warden.test_reset! }
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.

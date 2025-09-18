@@ -1,0 +1,7 @@
+$('body')
+  .find("[data-pconversation-id='<%= @conversation_id %>']")
+  .remove();
+
+if (typeof positionChatWindows === 'function') {
+  positionChatWindows();
+}

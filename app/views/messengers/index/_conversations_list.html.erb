@@ -1,0 +1,9 @@
+<ul class="list-group list-group-flush" id="messenger-conversations-list">
+  <% @all_conversations.each do |item| %>
+    <% if item.is_a?(Private::Conversation) %>
+      <%= render "messengers/index/conversations_list_item/private", conversation: item %>
+    <% else %>
+      <%= render "messengers/index/conversations_list_item/group", conversation: item %>
+    <% end %>
+  <% end %>
+</ul>

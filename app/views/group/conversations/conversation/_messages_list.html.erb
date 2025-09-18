@@ -1,0 +1,10 @@
+<div class="messages-list">
+  <div id="gc<%= conversation.id %>-messages">
+    <%= render partial: 'group/messages/load_more_messages/window',
+               locals: { conversation: conversation, messenger_boolean: false } %>
+  </div>
+
+  <div class="loading-more-messages">
+    <i class="fa fa-spinner" aria-hidden="true"></i>
+  </div>
+</div>

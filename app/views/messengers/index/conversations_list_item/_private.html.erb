@@ -1,0 +1,10 @@
+<% other_user = conversation.opposed_user(current_user) %>
+<li class="list-group-item p-0">
+  <%= link_to get_private_conversation_messengers_path(id: other_user.id, format: :js, _t: Time.current.to_i),
+              class: "list-group-item-action px-3 py-2 d-flex align-items-center gap-2",
+              remote: true,
+              data: { turbo: false } do %>
+    <i class="fa-regular fa-user"></i>
+    <span class="text-truncate"><%= other_user&.name || "Conversation" %></span>
+  <% end %>
+</li>

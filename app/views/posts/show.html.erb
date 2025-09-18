@@ -1,9 +1,29 @@
-<div id="single-post-content" class="container">
-  <div class="row justify-content-center">
-    <div class="col-sm-6">
-      <div class="posted-by">Posted by <%= @post.user.name %></div>
-      <h3><%= @post.title %></h3>
-      <p><%= @post.content %></p>
+<div id="single-post-content">
+  <div class="post-card">
+    <h3><%= @post.title %></h3>
+
+    <div class="post-meta">
+      <span class="chip"><i class="fa-regular fa-user"></i> <%= @post.user.name %></span>
+      <span class="chip"><i class="fa-regular fa-clock"></i> <%= l(@post.created_at, format: :long) %></span>
+      <% if @post.category %>
+        <span class="chip"><i class="fa-solid fa-tag"></i> <%= @post.category.name %></span>
+      <% end %>
+    </div>
+
+    <div class="posted-by">Posted by <%= @post.user.name %></div>
+
+    <div class="post-body">
+      <%= simple_format(h(@post.content)) %>
+    </div>
+
+    <div class="post-actions">
+      <% if user_signed_in? %>
+       <%= render contact_user_partial_path(@post) %>
+      <% else %>
+        <div id="contact_user" class="contact-user">
+          <div>To contact the user you have to log in or sign up first.</div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

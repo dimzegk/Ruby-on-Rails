@@ -1,0 +1,11 @@
+<div class="load-more-messages">
+  <%= link_to "Load previous messages",
+              private_messages_path(
+                conversation_id: conversation.id,
+                format: :js,
+                is_messenger: (@is_messenger == true || @is_messenger == 'true')
+              ),
+              remote: true,
+              data: { turbo: false },
+              class: "js-load-more-messages" %>
+</div>

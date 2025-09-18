@@ -1,9 +1,41 @@
-#sign-up-form {
-    margin-top: 100px;
-    h1 {
-      font-size: 36px !important;
-      font-size: 3.6rem !important;
-    }
-    text-align: center;
-    padding-bottom: 20px; 
+
+.auth-shell {
+  min-height: calc(100vh - 56px); 
+  padding: 24px 16px;
+  display: grid;
+  place-items: center; 
+  background: transparent;
+}
+
+
+.signup-card {
+  width: min(900px, 100%);        
+  border-radius: 16px;
+  overflow: hidden;
+
+  .card-header { padding: 14px 18px; }
+  .card-body   { padding: clamp(20px, 4vw, 40px); }
+
+  .form-control {
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    font-size: 1.05rem;
   }
+
+  .btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 0.9rem 1rem;
+  }
+}
+
+.auth-shell h1.h3 {
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem);
+}
+.auth-shell p { font-size: clamp(.95rem, .9rem + .25vw, 1.05rem); }
+
+
+@media (max-width: 575.98px) {
+  .signup-card { width: 100%; }
+  .signup-card .card-body { padding: 20px; }
+}

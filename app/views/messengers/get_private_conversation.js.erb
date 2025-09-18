@@ -1,0 +1,12 @@
+(function() {
+  var pane = document.getElementById("messenger-pane");
+  if (!pane) return;
+
+  pane.innerHTML = "<%= j render('messengers/index/conversation', conversation: @conversation) %>";
+
+  var list = pane.querySelector('.messages-list');
+  if (list) list.scrollTop = list.scrollHeight;
+
+  var ta = pane.querySelector('textarea[name="body"]');
+  if (ta) ta.focus();
+})();
