@@ -8,7 +8,7 @@ module Group::ConversationsHelper
     users_in_conv = conversation.users
     add_people_to_conv_list = []
     contacts.each do |contact|
-      # if the contact is already in the conversation, remove it from the list
+
       if !users_in_conv.include?(contact)
         add_people_to_conv_list << contact
       end

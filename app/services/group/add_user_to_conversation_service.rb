@@ -1,4 +1,3 @@
-# app/services/group/add_user_to_conversation_service.rb
 class Group::AddUserToConversationService
   def initialize(params)
     @group_conversation_id = params[:group_conversation_id]
@@ -22,7 +21,7 @@ class Group::AddUserToConversationService
       user_id: added_by.id,
       content: "#{new_user.name} added by #{added_by.name}",
       added_new_users: [ new_user.id ],
-      conversation_id: @group_conversation_id # ✅ Εδώ ήταν το λάθος
+      conversation_id: @group_conversation_id 
     )
     if message.save
       Group::MessageBroadcastJob.perform_later(message, nil, nil)

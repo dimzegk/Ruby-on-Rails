@@ -1,10 +1,12 @@
-<ul class="messages-list">
-  <% previous_message = nil %>
-  <% conversation.messages.each do |message| %>
-    <%= render 'private/messages/message', 
-               message: message, 
-               previous_message: previous_message,
-               user: current_user %>
-    <% previous_message = message %>
-  <% end %>
-</ul>
+<div class="messages-list" id="pc<%= conversation.id %>-messages">
+  <ul id="pc<%= conversation.id %>-messages_ul" class="list-unstyled mb-0">
+    <% previous_message = nil %>
+    <% conversation.messages.order(:created_at).each do |message| %>
+      <%= render "private/messages/message",
+                 message: message,
+                 previous_message: previous_message,
+                 user: (defined?(current_user) ? current_user : local_assigns[:user]) %>
+      <% previous_message = message %>
+    <% end %>
+  </ul>
+</div>

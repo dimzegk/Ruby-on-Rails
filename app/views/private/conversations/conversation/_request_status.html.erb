@@ -1,2 +1,19 @@
-<%= render unaccepted_contact_request_partial_path(contact) %>
-<%= render not_contact_no_request_partial_path(contact, recipient) %>
+<% recipient ||= local_assigns[:recipient] || @recipient %>
+<% raise "Missing recipient" unless recipient %>
+
+<% target_id = "pc#{conversation.id}_contact_cta" %>
+
+<div class="d-flex align-items-center justify-content-between gap-2 p-2 mb-2 border rounded bg-body-tertiary">
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <%= render "contacts/state",
+          other: recipient,
+          current_user: current_user,
+          target_id: target_id %>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <%= render "private/conversations/conversation/heading/app_group_chat_button",
+          conversation: conversation,
+          recipient: recipient %>
+  </div>
+</div>

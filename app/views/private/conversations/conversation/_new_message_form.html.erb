@@ -1,6 +1,12 @@
-<form class="send-private-message">
-  <input name="conversation_id" type="hidden" value="<%= conversation.id %>">
-  <input name="user_id" type="hidden" value="<%= user.id %>">
-  <textarea name="body" rows="3" class="form-control" placeholder="Type a message..."></textarea>
-  <input type="submit" class="btn btn-success send-message">
-</form>
+<%= form_with url: private_conversation_messages_path(conversation),
+              method: :post,
+              scope:  :message,
+              html:   { id: "pc#{conversation.id}-form", class: "chat-composer d-grid gap-2" } do |f| %>
+  <%= f.text_area :body,
+                  rows: 2,
+                  class: "form-control",
+                  placeholder: "Type a message...",
+                  required: true,
+                  autocomplete: "off" %>
+  <%= f.submit "Send", class: "btn btn-primary ms-auto" %>
+<% end %>

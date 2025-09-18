@@ -1,0 +1,17 @@
+<div class="load-more-messages" data-conversation-id="<%= conversation.id %>"></div>
+
+<% messages = conversation.messages.includes(:user).order(:created_at) %>
+
+<ul id="group-conversation-<%= conversation.id %>-messages" class="list-unstyled mb-0">
+  <% messages.each_with_index do |message, idx| %>
+    <% prev = idx.zero? ? nil : messages[idx - 1] %>
+    <%= render partial: "group/messages/message/message",
+               locals: {
+                 message: message,
+                 previous_message: prev,
+                 user: current_user,
+                 messenger_boolean: messenger_boolean,
+                 conversation: conversation
+               } %>
+  <% end %>
+</ul>

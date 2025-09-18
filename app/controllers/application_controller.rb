@@ -47,7 +47,9 @@ def opened_conversations_windows
   end
 end
 
-
+def messenger_page?
+    controller_name == "messengers"
+  end
   def all_ordered_conversations
     if user_signed_in?
       @all_conversations = OrderConversationsService.new(user: current_user).call

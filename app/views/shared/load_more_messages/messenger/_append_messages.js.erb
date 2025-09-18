@@ -1,0 +1,11 @@
+
+$('body .conversation .messages-list .load-more-messages')
+  .replaceWith('<span class="load-more-messages"></span>');
+
+
+$('body .conversation .messages-list ul')
+  .prepend('<%= j render(@type.to_s == "private" ? "private/conversations/messages" : "group/messages/messages")
+ %>');
+
+
+$('body .conversation .messages-list').scrollTop(400);

@@ -1,0 +1,8 @@
+<%= turbo_stream_from "u#{current_user.id}:contacts" %>
+
+<ul id="contact_requests_list" class="list-unstyled mb-0">
+  <% pending = Contact.where(receiver_id: current_user.id, accepted: [false, nil]) %>
+  <% pending.each do |c| %>
+    <%= render "contacts/request_item", contact: c %>
+  <% end %>
+</ul>

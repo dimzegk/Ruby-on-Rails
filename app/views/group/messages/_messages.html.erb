@@ -1,9 +1,7 @@
 <% previous_message = nil %>
-<% @messages.reverse.each do |message| %>
-  <%= render partial: 'group/messages/message', 
-             locals: { user: message.user, 
-                       conversation_id: @conversation.id,
-                       message: message, 
-                       previous_message: previous_message } %>
+<% (@messages || []).reverse_each do |message| %>
+  <%= render partial: "group/messages/message/message",
+             formats: [:html],
+             locals: { message: message, user: (@user || current_user), previous_message: previous_message } %>
   <% previous_message = message %>
 <% end %>

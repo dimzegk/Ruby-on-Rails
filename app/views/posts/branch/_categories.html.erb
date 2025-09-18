@@ -1,15 +1,22 @@
 <% branch_path_name = "#{params[:action]}_posts_path" %>
 
-<div class="col-sm-12">
-  <ul class="categories-list">
-    <%= render all_categories_button_partial_path, 
-               branch_path_name: branch_path_name %>
-    <% @categories.each do |category| %>
-      <li class="category-item">
-        <%= link_to category.name, 
-                    send(branch_path_name, category: category.name), 
-                    :class => ("selected-item" if params[:category] == category.name) %>
+<div class="card branch-categories">
+  <div class="card-body">
+    <ul class="categories-list-pills">
+      <li>
+        <%= render all_categories_button_partial_path,
+                   branch_path_name: branch_path_name %>
       </li>
-    <% end %>
-  </ul>
-</div><!-- col-sm-12 -->
+      <% @categories.each do |category| %>
+        <li>
+          <%= link_to category.name,
+                      send(branch_path_name, category: category.name),
+                      class: [
+                        "badge rounded-pill text-bg-light category-pill",
+                        ("active" if params[:category] == category.name)
+                      ].compact.join(" ") %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

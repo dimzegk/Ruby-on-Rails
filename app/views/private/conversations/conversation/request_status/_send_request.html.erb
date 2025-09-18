@@ -1,14 +1,20 @@
-<div class="contact-request-status">
+<% r = local_assigns[:recipient] || @recipient %>
+
+<% if r.present? %>
   <div class="add-user-to-contacts-message">
     <div>
-      <%= @recipient.name %> is not in your contacts
+      <%= h(r.name) %> is not in your contacts
     </div>
-    <div>
-      <%= link_to "Add to contacts", 
-                  contacts_path(contact_id: @recipient), 
-                  remote: true, 
-                  method: :post, 
-                  class: 'add-user-to-contacts-notif' %>
+
+    <div class="mt-2">
+      <%= button_to "Add to contacts",
+            contacts_path,
+            method: :post,
+            remote: true,
+            params: { contact_id: r.id },
+            class: "btn btn-sm btn-primary" %>
     </div>
-  </div>   
-</div>
+  </div>
+<% else %>
+  <!-- No recipient available; nothing to show -->
+<% end %>

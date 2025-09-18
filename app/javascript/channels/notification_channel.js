@@ -1,15 +1,58 @@
-import consumer from "./consumer"
+import consumer from "./consumer";
 
-consumer.subscriptions.create("NotificationChannel", {
+const notificationChannel = consumer.subscriptions.create("NotificationChannel", {
   connected() {
-    // Called when the subscription is ready for use on the server
+    console.log("🔔 NotificationChannel connected");
   },
 
   disconnected() {
-    // Called when the subscription has been terminated by the server
+    console.log("🔌 NotificationChannel disconnected");
   },
 
   received(data) {
-    // Called when there's incoming data on the websocket for this channel
+    if (data.notification === "accepted-contact-request") {
+      console.log("✅ Contact request accepted by", data.sender_user_name);
+
+    }
+
+    if (data.notification === "declined-contact-request") {
+      console.log("❌ Contact request declined by", data.sender_user_name);
+    }
+
+
+    if (data.notification === "contact-request-received") {
+      const conversationWindow = document.querySelector(`[data-pconversation-user-name="${data.sender_name}"]`);
+      const requestsList = document.querySelector("#contacts-requests ul");
+      const noRequestsMsg = document.querySelector("#contacts-requests ul .no-requests");
+
+      if (noRequestsMsg) noRequestsMsg.remove(); // Αφαίρεση "You have no requests"
+      
+      if (conversationWindow) {
+        const contactBtn = conversationWindow.querySelector('.add-user-to-contacts');
+        if (contactBtn) contactBtn.remove();
+
+        const msg = conversationWindow.querySelector('.add-user-to-contacts-message');
+        if (msg) msg.parentElement.remove();
+
+        const header = conversationWindow.querySelector('.conversation-heading');
+        if (header) header.style.width = '360px';
+      }
+
+      if (requestsList) {
+        requestsList.insertAdjacentHTML('afterbegin', data.contact_request);
+      }
+
+      calculateContactRequests?.();
+    }
+  },
+
+  contact_request_response(sender_user_name, receiver_user_name, notification) {
+    return this.perform("contact_request_response", {
+      sender_user_name,
+      receiver_user_name,
+      notification
+    });
   }
 });
+
+export default notificationChannel;

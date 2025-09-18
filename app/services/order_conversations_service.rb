@@ -1,21 +1,24 @@
 class OrderConversationsService
-  def initialize(params)
-    @user = params[:user]
+  def initialize(arg)
+    @user =
+      if arg.respond_to?(:id)        # π.χ. User instance
+        arg
+      elsif arg.is_a?(Hash)          # π.χ. { user: current_user }
+        arg[:user] || arg["user"]
+      end
   end
 
-def call
-  all_private_conversations = Private::Conversation
-                                  .all_by_user(@user.id)
-                                  .includes(:messages)
+  def call
+    raise ArgumentError, "user is required" unless @user
 
-  all_group_conversations = @user.group_conversations.includes(:messages)
+    all_private = Private::Conversation
+                    .all_by_user(@user.id)
+                    .includes(:messages)
 
-  all_conversations = all_private_conversations + all_group_conversations
+    all_group   = @user.group_conversations.includes(:messages)
 
-  # Ταξινόμηση κατά created_at του τελευταίου μηνύματος
-  all_conversations.sort do |a, b|
-    (b.messages.last&.created_at || Time.zone.at(0)) <=>
-    (a.messages.last&.created_at || Time.zone.at(0))
+    (all_private + all_group)
+      .sort_by { |c| c.messages.maximum(:created_at) || Time.at(0) }
+      .reverse
   end
-end
 end

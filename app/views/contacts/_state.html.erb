@@ -1,0 +1,69 @@
+<%# app/views/contacts/_state.html.erb
+    locals: other:, current_user:, target_id:, conversation_id: (optional)
+%>
+<%
+  contact =
+    if defined?(Contact) && Contact.respond_to?(:find_by_users)
+      Contact.find_by_users(current_user.id, other.id) ||
+      Contact.find_by_users(other.id, current_user.id)
+    else
+      Contact.where(user_id: current_user.id, contact_id: other.id)
+             .or(Contact.where(user_id: other.id, contact_id: current_user.id))
+             .first
+    end
+
+  accepted =
+    if contact&.respond_to?(:accepted?)
+      contact.accepted?
+    elsif contact&.respond_to?(:status)
+      contact.status.to_s == "accepted"
+    else
+      false
+    end
+
+  pending = contact.present? && !accepted
+
+  contact_sender_id   = contact&.try(:sender_id)   || contact&.try(:user_id)
+  contact_receiver_id = contact&.try(:receiver_id) || contact&.try(:contact_id)
+
+  outgoing = pending && contact_sender_id   == current_user.id
+  incoming = pending && contact_receiver_id == current_user.id
+%>
+
+<div id="<%= target_id %>" class="d-flex align-items-center gap-2 flex-wrap">
+  <% if accepted %>
+    <span class="badge text-bg-success">
+      <i class="fa-solid fa-user-check me-1"></i>In contacts
+    </span>
+
+  <% elsif incoming %>
+    <span class="badge text-bg-info">
+      <i class="fa-solid fa-inbox me-1"></i>Request received
+    </span>
+    <%= button_to "Accept",
+          contact_path(id: other.id),
+          method: :put,
+          params: { target: target_id, conversation_id: local_assigns[:conversation_id] },
+          class: "btn btn-sm btn-outline-success" %>
+    <%= button_to "Decline",
+          contact_path(id: other.id),
+          method: :delete,
+          params: { target: target_id, conversation_id: local_assigns[:conversation_id] },
+          class: "btn btn-sm btn-outline-danger" %>
+
+  <% elsif outgoing %>
+    <span class="badge text-bg-warning">
+      <i class="fa-solid fa-hourglass-half me-1"></i>Request sent
+    </span>
+
+  <% else %>
+    <span class="badge text-bg-secondary">
+      <i class="fa-regular fa-user me-1"></i>Not in contacts
+    </span>
+    <%= button_to "Add to contacts",
+          contacts_path,
+          method: :post,
+          params: { contact_id: other.id, target: target_id, conversation_id: local_assigns[:conversation_id] },
+          class: "btn btn-sm btn-primary" %>
+  <% end %>
+</div>

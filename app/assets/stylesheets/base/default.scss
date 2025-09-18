@@ -1,45 +1,85 @@
-html, body {
-  margin: 0;
-  padding: 0;
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 html {
-  font-size: 62.5%;
+  font-size: 62.5%; 
 }
 
 body {
   background: $backgroundColor;
+  color: #111;
   font-size: 1.4rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {
   font-size: 2.4rem;
+  margin: 0 0 .5rem;
 }
 
-i {
-  width: 26px;
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-ul {
-  list-style-type: none;
-}
 
-a:hover, a:active, a:link, a:visited {
+a {
+  color: inherit;
   text-decoration: none;
 }
+a:hover { text-decoration: underline; }
+
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+.icon-26 {
+  width: 26px;
+  display: inline-block;
+  text-align: center;
+}
+
 
 .control-label {
   display: none;
 }
-.login-button, .sign-up-button {
+
+
+.login-button,
+.sign-up-button {
   background-color: $navbarColor;
-  color: white !important;
-}
-.container {
-  padding: 0;
+  color: #fff !important;
 }
 
-.row {
-  margin: 0;
+.container--flush {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+
+.row--no-gutters {
+  --bs-gutter-x: 0;
+  --bs-gutter-y: 0;
+}
+
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 1px, 1px) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }

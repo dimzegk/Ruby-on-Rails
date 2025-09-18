@@ -11,7 +11,7 @@ module NavigationHelper
 
     if params[:controller] == "messengers"
       partials << "layouts/navigation/header/messenger_header"
-    else # controller is not messengers
+    else 
       partials << "layouts/navigation/header/toggle_button"
       partials << "layouts/navigation/header/home_button"
       partials << "layouts/navigation/header/dropdowns" if user_signed_in?

@@ -13,21 +13,21 @@ if (conversation.length !== 1) {
                                 "']");
 }
 
-// Toggle conversation window after its creation
+
 $('.conversation-window:nth-of-type(' + chat_windows_count + ') .conversation-heading').click();
 
-// mark as seen by clicking it again after 1s
+
 setTimeout(function() {
   $('.conversation-window:nth-of-type(' + chat_windows_count + ')').click();
 }, 1000);
 
-// focus textarea
+
 $('.conversation-window:nth-of-type(' + chat_windows_count + ') form textarea').focus();
 
-// scroll to bottom
+
 var messages_list = conversation.find('.messages-list');
 var height = messages_list[0].scrollHeight;
 messages_list.scrollTop(height);
 
-// repositions all conversation windows
-positionChatWindows();
+
+if (window.positionChatWindows) window.positionChatWindows();

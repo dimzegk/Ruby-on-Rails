@@ -31,7 +31,7 @@ class PostsController < ApplicationController
     if @post.save
       redirect_to post_path(@post)
     else
-      redirect_to root_path # εναλλακτικά: render :new, status: :unprocessable_entity
+      redirect_to root_path 
     end
   end
 

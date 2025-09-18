@@ -17,15 +17,13 @@ class Group::NewConversationService
     if new_group_conversation.save
       arr_of_users_ids = [ creator.id, pchat_opposed_user.id, new_user_to_chat.id ]
 
-      # Add users to conversation
       creator.group_conversations << new_group_conversation
       pchat_opposed_user.group_conversations << new_group_conversation
       new_user_to_chat.group_conversations << new_group_conversation
 
-      # Initial info message
+
       create_initial_message(creator, arr_of_users_ids, new_group_conversation)
 
-      # Return the conversation
       new_group_conversation
     end
   end

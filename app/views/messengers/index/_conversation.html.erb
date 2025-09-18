@@ -1,10 +1,213 @@
-<div class="col-sm-10">
-  <div class="conversation">
-    <div class="start-conversation">
-      <div>
-        <i class="fa fa-inbox" aria-hidden="true"></i><br>
-        Open a conversation
+<% conv       = conversation %>
+<% is_private = conv.is_a?(Private::Conversation) %>
+<% other      = (is_private && conv.respond_to?(:opposed_user)) ? conv.opposed_user(current_user) : nil %>
+
+
+<% contact = (is_private && other) ? get_contact_record(other) : nil %>
+
+
+<% if is_private && other && contact.blank? %>
+  <% begin %>
+    <% if defined?(Contact) %>
+      <% contact =
+           if Contact.respond_to?(:find_by_users)
+             Contact.find_by_users(current_user.id, other.id) ||
+             Contact.find_by_users(other.id, current_user.id)
+           else
+             Contact.where(sender_id: current_user.id, receiver_id: other.id)
+                    .or(Contact.where(sender_id: other.id, receiver_id: current_user.id))
+                    .first
+           end %>
+    <% end %>
+  <% rescue NameError %>
+
+  <% end %>
+<% end %>
+
+
+<% accepted = (contact&.respond_to?(:accepted?) && contact.accepted?) || (contact&.respond_to?(:status) && contact.status.to_s == "accepted") %>
+<% pending  = (contact&.respond_to?(:pending?)  && contact.pending?)  || (contact && !accepted) %>
+<% incoming = pending && contact.try(:receiver_id) == current_user.id %>
+<% outgoing = pending && contact.try(:sender_id)   == current_user.id %>
+
+<% groups =
+     if current_user.respond_to?(:group_conversations)
+       current_user.group_conversations
+     elsif current_user.respond_to?(:groups)
+       current_user.groups
+     else
+       []
+     end %>
+
+<% action_bar_id = "actions_#{is_private ? "pc#{conv.id}" : "gc#{conv.id}"}" %>
+
+<div class="card h-100">
+  <div class="card-header d-flex align-items-center justify-content-between gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <% if is_private %>
+        <i class="fa-regular fa-user"></i>
+        <strong><%= other&.name || "Conversation" %></strong>
+      <% else %>
+        <i class="fa-solid fa-users"></i>
+        <strong><%= conv.try(:name) || "Group conversation" %></strong>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card-body p-0 d-flex flex-column" style="min-height:50vh">
+
+    <%= turbo_stream_from (is_private ? "u#{current_user.id}:pc#{conv.id}" : "u#{current_user.id}:gc#{conv.id}") %>
+
+    <!-- ======= INLINE ACTION BAR (Contact / Group) ======= -->
+    <div id="<%= action_bar_id %>"
+         class="messenger-actions alert alert-light d-flex align-items-center justify-content-between gap-2 flex-wrap mb-2 px-3 py-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="fw-semibold"><i class="fa-regular fa-user me-1"></i>Contact</span>
+        <% if accepted %>
+          <span class="badge text-bg-success">In contacts</span>
+        <% elsif incoming %>
+          <span class="badge text-bg-info">Request received</span>
+        <% elsif outgoing %>
+          <span class="badge text-bg-warning">Request sent</span>
+        <% else %>
+          <span class="badge text-bg-secondary">Not added</span>
+        <% end %>
+
+        <% if is_private && other %>
+          <% if incoming %>
+            <%= button_to "Accept",
+                  contact_path(id: other.id),
+                  method: :put,
+                  params: { conversation_id: conv.id },
+                  data:   { disable_with: "Accepting…" },
+                  class: "btn btn-sm btn-outline-success" %>
+
+            <%= button_to "Decline",
+                  contact_path(id: other.id),
+                  method: :delete,
+                  params: { conversation_id: conv.id },
+                  data:   { disable_with: "Declining…" },
+                  class: "btn btn-sm btn-outline-danger" %>
+
+          <% elsif !accepted && !pending %>
+            <%= button_to "Add to contacts",
+                  contacts_path,
+                  method: :post,
+                  params: { contact_id: other.id, conversation_id: conv.id },
+                  data:   { disable_with: "Sending…" },
+                  class: "btn btn-sm btn-primary" %>
+          <% end %>
+        <% end %>
       </div>
+
+      <div class="vr d-none d-md-block" style="height:22px;"></div>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="fw-semibold"><i class="fa-solid fa-users me-1"></i>Group</span>
+        <span class="badge text-bg-secondary"><%= is_private ? "No group" : "Member" %></span>
+
+        <% if is_private && other %>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-user-plus me-1"></i>Start / Add…
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <!-- Νέο group με τον other: απευθείας POST στο create -->
+              <li class="dropdown-header">New group</li>
+              <li>
+                <%= button_to group_conversations_path,
+                      method: :post,
+                      params: { group_conversation: { name: "" }, with: other.id },
+                      class: "dropdown-item" do %>
+                  <i class="fa-solid fa-user-group me-2"></i>
+                  Start new group with <%= h(other.name) %>
+                <% end %>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+
+              <% if groups.present? %>
+                <li class="dropdown-header">Add to existing</li>
+                <% groups.each do |g|
+                     already = (g.respond_to?(:users)   && g.users.exists?(id: other.id)) ||
+                               (g.respond_to?(:members) && g.members.exists?(id: other.id)) %>
+                  <li>
+                    <%= button_to group_conversation_path(g),
+                          method: :patch,
+                          params: { user: { id: other.id }, added_by: current_user.id },
+                          class: "dropdown-item d-flex justify-content-between align-items-center",
+                          disabled: already do %>
+                      <span><i class="fa-regular fa-circle-dot me-2"></i><%= h(g.try(:name) || "Group ##{g.id}") %></span>
+                      <% if already %>
+                        <span class="badge text-bg-secondary">Member</span>
+                      <% else %>
+                        <i class="fa-solid fa-plus"></i>
+                      <% end %>
+                    <% end %>
+                  </li>
+                <% end %>
+              <% else %>
+                <li><span class="dropdown-item-text text-muted">No groups yet</span></li>
+              <% end %>
+            </ul>
+          </div>
+        <% else %>
+          <%= link_to raw('<i class="fa-solid fa-user-plus me-1"></i>Add people'),
+                      edit_group_conversation_path(conv),
+                      class: "btn btn-sm btn-outline-secondary",
+                      data: { turbo: false } %>
+        <% end %>
+      </div>
+    </div>
+
+
+
+    <% ul_id = is_private ? "pc#{conv.id}-messages_ul" : "gc#{conv.id}-messages_ul" %>
+    <div class="messages-list px-3 py-2">
+      <ul class="list-unstyled mb-0" id="<%= ul_id %>">
+        <% conv.messages.order(:created_at).each do |msg| %>
+          <% sender_id = msg.try(:user_id) || msg.try(:sender_id) || msg.try(:author_id) %>
+          <% sent      = (sender_id == current_user.id) %>
+          <% text      = msg.try(:content) || msg.try(:body) || msg.try(:message) || msg.try(:text) || "" %>
+          <% time_str  = (defined?(l) ? l(msg.created_at, format: :time) : msg.created_at.strftime('%H:%M')) rescue msg.created_at.strftime('%H:%M') %>
+
+          <% system_msg =
+               (msg.respond_to?(:kind) && msg.kind.to_s == "system") ||
+               (msg.respond_to?(:system?) && msg.system?) ||
+               sender_id.blank? ||
+               text.to_s.match?(/\b(added by|removed by|invited|joined|left|προστέθηκε από|αφαιρέθηκε από|προσκαλέστηκε|μπήκε|έφυγε)\b/i)
+          %>
+
+          <% if system_msg %>
+            <li class="mb-1 d-grid">
+              <div class="system-notice"><%= h(text) %></div>
+            </li>
+          <% else %>
+            <li class="mb-1 d-grid" data-message-id="<%= msg.id %>">
+              <div class="<%= sent ? 'message-sent ms-auto' : 'message-received me-auto' %>" data-time="<%= time_str %>">
+                <% unless sent %>
+                  <div class="small text-muted mb-1"><%= msg.try(:user)&.name %></div>
+                <% end %>
+                <%= simple_format(h(text)) %>
+              </div>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+
+
+    <div class="border-top p-2">
+      <% form_id = is_private ? "pc#{conv.id}-form" : "gc#{conv.id}-form" %>
+      <% post_url = is_private ? private_conversation_messages_path(conv) : group_conversation_messages_path(conv) %>
+
+      <%= form_with url: post_url,
+                    method: :post,
+                    scope:  :message,
+                    html:   { id: form_id, class: "chat-composer d-grid gap-2" } do |f| %>
+        <%= f.text_area :body, rows: 2, class: "form-control",
+                        placeholder: "Write a message…", required: true, autocomplete: "off" %>
+        <%= f.submit "Send", class: "btn btn-primary ms-auto" %>
+      <% end %>
     </div>
   </div>
 </div>

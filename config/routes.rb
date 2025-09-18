@@ -1,54 +1,55 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: "registrations" }
   root to: "pages#index"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
-
-# Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-# get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-# get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-# Defines the root path route ("/")
-# root "posts#index"
-devise_scope :user do
-  get "login", to: "devise/sessions#new"
-end
-devise_scope :user do
-  get "signup", to: "devise/registrations#new"
-end
-resources :posts do
-  collection do
-    get "hobby"
-    get "study"
-    get "team"
+  devise_scope :user do
+    get "login",  to: "devise/sessions#new"
+    get "signup", to: "devise/registrations#new"
   end
-end
-namespace :private do
-  resources :conversations, only: [ :create ] do
-    member do
-      post :close
-        post :open
+
+  resources :posts do
+    collection do
+      get :hobby
+      get :study
+      get :team
     end
   end
-  resources :messages, only: [ :index, :create ]
-end
-mount ActionCable.server => "/cable"
-resources :contacts, only: [ :create, :update, :destroy ]
+
+  namespace :private do
+    resources :conversations, only: [ :create ] do
+      member do
+        post :close
+        get  :open
+      end
+
+      resources :messages, only: [ :index, :create ]
+    end
+  end
+
 namespace :group do
   resources :conversations do
     member do
       post :close
       post :open
     end
+    resources :messages, only: [ :index, :create ]  
   end
-
-  resources :messages, only: [ :index, :create ]
 end
-get "messenger",                to: "messengers#index"
-get "get_private_conversation", to: "messengers#get_private_conversation"
-get "get_group_conversation",   to: "messengers#get_group_conversation"
-get "open_messenger",           to: "messengers#open_messenger"
+
+
+  resources :contacts, only: [ :create, :update, :destroy ]
+
+  resources :messengers, only: [ :index ] do
+    collection do
+      get :get_private_conversation
+      get :get_group_conversation
+      get :open_messenger
+    end
+  end
+  get "messenger",          to: "messengers#index" # σύντομο alias
+  get "open_messenger",     to: "messengers#open_messenger",     as: :open_messenger
+  get "get_private_conversation", to: "messengers#get_private_conversation", as: :get_private_conversation
+  get "get_group_conversation",   to: "messengers#get_group_conversation",   as: :get_group_conversation
+
+  mount ActionCable.server => "/cable"
 end

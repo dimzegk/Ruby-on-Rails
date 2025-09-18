@@ -1,5 +1,9 @@
-<div class="contact-request-status">
-  <div class="pending-request">
-    Contact request is pending
+<% compact = local_assigns[:compact] || false %>
+
+<% if compact %>
+  <span class="text-muted small">Waiting for approval…</span>
+<% else %>
+  <div class="contact-request-status">
+    <div class="pending-request">Contact request is pending</div>
   </div>
-</div>
+<% end %>

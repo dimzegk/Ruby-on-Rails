@@ -1,8 +1,8 @@
-// Εισαγωγή loading message
+
 $('.conversation .messages-list').prepend('<div class="loading-more-messages">Loading previous messages...</div>');
 
-// Εισαγωγή JS από το helper που καθορίζει auto-load ή όχι
+
 <%= render autoload_messenger_messages %>
 
-// Cleanup fallback (αφαίρεση loading + κουμπιού)
+
 <%= render remove_link_to_messages %>

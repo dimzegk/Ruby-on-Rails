@@ -1,20 +1,22 @@
-class Group::Message < ApplicationRecord
-  self.table_name = "group_messages"
-  belongs_to :conversation,
-             class_name: "Group::Conversation",
-             foreign_key: "conversation_id"
+module Group
+  class Message < ApplicationRecord
+    self.table_name = "group_messages"
 
-  belongs_to :user
+    belongs_to :conversation,
+               class_name: "Group::Conversation",
+               foreign_key: :conversation_id
 
-  validates :content, presence: true
-  validates :user_id, presence: true
-  validates :conversation_id, presence: true
+    belongs_to :user,  
+               class_name: "User",
+               foreign_key: :user_id
 
-  default_scope { includes(:user) }
+    after_create_commit do
+      Group::MessageBroadcastJob.perform_later(self, previous_message)
+    end
 
-  # Βρίσκει το προηγούμενο μήνυμα της συνομιλίας
-  def previous_message
-    previous_message_index = self.conversation.messages.index(self) - 1
-    self.conversation.messages[previous_message_index]
+    def previous_message
+      index = conversation.messages.index(self)
+      conversation.messages[index - 1] if index && index > 0
+    end
   end
 end

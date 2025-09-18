@@ -1,6 +1,25 @@
-<div class="container-fluid messenger">
-  <div class="row">
-    <%= render 'messengers/index/conversations_list' %>
-    <%= render 'messengers/index/conversation' %>
-  </div><!-- row -->
+<div class="container-xxl messenger-page my-3">
+  <div class="row g-3">
+    <div class="col-12 col-lg-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <strong>Conversations</strong>
+        </div>
+        <div class="card-body p-0">
+          <%= render partial: "messengers/index/conversations_list" %>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-12 col-lg-8">
+      <div id="messenger-pane">
+        <div class="card h-100">
+          <div class="card-body d-grid place-items-center text-muted" style="min-height: 40vh;">
+            Select a conversation…
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

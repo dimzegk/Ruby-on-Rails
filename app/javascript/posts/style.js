@@ -8,7 +8,7 @@ document.addEventListener("turbo:load", () => {
   }
 
   const colorSet = randomColorSet();
-  const mode = Math.floor(Math.random() * 2); // 0: border, 1: background
+  const mode = Math.floor(Math.random() * 2); 
 
   console.log("Mode:", mode);
   console.log("Color set:", colorSet);

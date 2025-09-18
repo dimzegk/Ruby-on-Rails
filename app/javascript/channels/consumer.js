@@ -1,6 +1,9 @@
-// Action Cable provides the framework to deal with WebSockets in Rails.
-// You can generate new channels where WebSocket features live using the `bin/rails generate channel` command.
+import { createConsumer } from "@rails/actioncable";
 
-import { createConsumer } from "@rails/actioncable"
+const url = document.querySelector('meta[name="action-cable-url"]')?.content || "/cable";
+console.log("🔌 consumer connecting to:", url);
 
-export default createConsumer()
+const consumer = createConsumer(url);
+window.__CableConsumer__ = consumer;
+
+export default consumer;

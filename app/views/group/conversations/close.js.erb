@@ -1,6 +1,8 @@
-$('body')
-  .find("[data-gconversation-id='<%= @conversation.id %>']")
-  .parent()
-  .remove();
+var pane =
+  document.querySelector('[data-gconversation-id="<%= @conversation.id %>"]') ||
+  document.getElementById('gc<%= @conversation.id %>') ||
+  document.querySelector('#group_conversation_<%= @conversation.id %>');
 
-positionChatWindows();
+if (pane) pane.remove();
+
+if (window.positionChatWindows) window.positionChatWindows();

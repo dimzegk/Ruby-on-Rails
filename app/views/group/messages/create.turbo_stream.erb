@@ -1,0 +1,21 @@
+<%= turbo_stream.append "gc#{@conversation.id}-messages_ul" do %>
+  <%= render partial: "group/messages/message/message",
+             locals:  { message: @message, user: current_user } %>
+<% end %>
+
+<%= turbo_stream.replace "gc#{@conversation.id}-form" do %>
+  <form id="gc<%= @conversation.id %>-form"
+        action="<%= group_conversation_messages_path(@conversation) %>"
+        method="post"
+        class="chat-composer"
+        data-turbo="true"
+        autocomplete="off">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <textarea name="message[body]"
+              rows="2"
+              class="form-control"
+              placeholder="Write a message…"
+              required></textarea>
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+<% end %>

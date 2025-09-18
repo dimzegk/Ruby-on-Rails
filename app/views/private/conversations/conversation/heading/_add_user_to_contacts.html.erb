@@ -1,6 +1,21 @@
-<%= link_to contacts_path(contact_id: @recipient), 
-            method: :post, 
-            remote: true, 
-            class: 'add-user-to-contacts add-user-to-contacts-notif' do %>
-  <i class="fa fa-user-plus" aria-hidden="true" title="Add to contacts"></i>
+<%# locals: recipient:, compact: false, target_id: nil %>
+<% r       = local_assigns[:recipient] || @recipient %>
+<% compact = !!local_assigns[:compact] %>
+<% target  = local_assigns[:target_id].presence || dom_id(r, :contact_cta) %>
+
+<% if r.present? %>
+  <!-- Το wrapper παίρνει ΣΤΑΘΕΡΟ id = target, ώστε ο controller να κάνει replace -->
+  <div id="<%= target %>" class="add-user-to-contacts-message <%= 'd-inline' if compact %>">
+    <% unless compact %>
+      <div><%= h(r.name) %> is not in your contacts</div>
+    <% end %>
+
+    <div class="<%= compact ? '' : 'mt-2' %>">
+      <%= button_to "Add to contacts",
+            contacts_path,
+            method: :post,
+            params: { contact_id: r.id, target: target },
+            class: ["btn", ("btn-sm" if compact), "btn-primary"].compact.join(" ") %>
+    </div>
+  </div>
 <% end %>

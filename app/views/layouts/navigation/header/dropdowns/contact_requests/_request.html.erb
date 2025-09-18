@@ -1,19 +1,20 @@
-<li class="contact-request" data-user-name="<%= user.name %>">
-  <div class="sixty-percent">
-    <span class="contact-name"><%= user.name %></span> 
-  </div>
-  <div class="forty-percent">
-    <span class="accept-request">
-      <%= link_to "Accept",  
-                  contact_path(id: user.id), 
-                  remote: true, 
-                  method: :put %>
-    </span> 
-    <span class="decline-request">
-      <%= link_to "Decline",
-                  contact_path(id: user.id), 
-                  remote: true, 
-                  method: :delete %>
-    </span>
-  </div>
+<%# locals: contact %>
+<% sender   = User.find(contact.try(:sender_id) || contact.try(:user_id)) %>
+<li id="<%= dom_id(contact, :request_row) %>" class="px-3 py-2 d-flex align-items-center justify-content-between">
+  <span>
+    <i class="fa-regular fa-user me-1"></i>
+    <%= h sender.name %> sent you a request
+  </span>
+  <span class="d-inline-flex gap-2">
+    <%= button_to "Accept",
+          contact_path(id: sender.id),
+          method: :put,
+          params: { target: dom_id(contact, :request_row) },  
+
+    <%= button_to "Decline",
+          contact_path(id: sender.id),
+          method: :delete,
+          params: { target: dom_id(contact, :request_row) },
+          class: "btn btn-sm btn-outline-danger" %>
+  </span>
 </li>

@@ -1,21 +1,63 @@
-<!-- Add more contacts to chat button -->
-<div class="add-people-to-chat" title="Create a group chat">
-  <div>
-    <i class="fa fa-plus" aria-hidden="true" data-toggle="dropdown"></i>
-  </div>
-</div>
+<% user = recipient || local_assigns[:recipient] || @recipient %>
+<% groups =
+     if defined?(current_user) && current_user.respond_to?(:groups)
+       current_user.groups
+     elsif defined?(current_user) && current_user.respond_to?(:group_conversations)
+       current_user.group_conversations
+     else
+       []
+     end %>
 
-<!-- select users to add to conversation -->
-<div class="select-users-to-chat">
-  <%= form_for(Group::Conversation.new, remote: true, class: 'form-group') do |f| %>
-    <%= hidden_field_tag :creator_id, current_user.id %>
-    <%= hidden_field_tag :private_conversation_id, conversation.id %>
-    <%= f.collection_select(:id, 
-                            contacts_except_recipient(@recipient), 
-                            :id, 
-                            :name, 
-                            {}, 
-                            { class: 'form-control select-users-dropdown' }) %>
-    <%= f.submit 'Start a conversation', class: 'form-control select-users-button' %>
-  <% end %>
+<div class="dropdown">
+  <button class="btn btn-outline-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false" title="Group options">
+    <i class="fa-solid fa-users"></i>
+  </button>
+
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li class="dropdown-header">Group chat</li>
+    <li>
+      <%= button_to group_conversations_path,
+            method: :post,
+            params: {
+              group_conversation: { name: "#{current_user.name}, #{user&.name}" },
+              with: user&.id
+            },
+            form: { data: { turbo_stream: true } },
+            class: "dropdown-item" do %>
+        <i class="fa-solid fa-user-group me-2"></i>
+        Start new group with <%= h(user&.name || "user") %>
+      <% end %>
+    </li>
+
+    <li><hr class="dropdown-divider"></li>
+
+    <% if groups.present? %>
+      <li class="dropdown-header">Add <%= h(user&.name || "user") %> to existing group</li>
+
+      <% groups.each do |g|
+           already = (g.respond_to?(:members) && g.members.exists?(id: user&.id)) ||
+                     (g.respond_to?(:users)   && g.users.exists?(id: user&.id)) %>
+        <li>
+          <%= button_to group_conversation_path(g),
+                method: :patch,
+                params: { user: { id: user&.id }, added_by: current_user.id },
+                form: { data: { turbo_stream: true } },
+                class: "dropdown-item d-flex justify-content-between align-items-center",
+                disabled: already do %>
+            <span>
+              <i class="fa-regular fa-circle-dot me-2"></i>
+              <%= h(g.try(:name) || "Group ##{g.id}") %>
+            </span>
+            <% if already %>
+              <span class="badge text-bg-secondary">Member</span>
+            <% else %>
+              <i class="fa-solid fa-plus"></i>
+            <% end %>
+          <% end %>
+        </li>
+      <% end %>
+    <% else %>
+      <li><span class="dropdown-item-text text-muted">No groups yet</span></li>
+    <% end %>
+  </ul>
 </div>

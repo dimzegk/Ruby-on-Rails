@@ -1,6 +1,10 @@
-<div class="new-post-button-parent">
-  <span>Cannot find anyone? Try to: </span>
-  <%= link_to "Create a new post", 
-              new_post_path(branch: branch), 
-              class: "new-post-button" %>
+<div class="card branch-cta mb-3">
+  <div class="card-body">
+    <h6 class="mb-2 fw-semibold">Cannot find anyone?</h6>
+    <p class="text-muted mb-3">Create your own post and let others reach out.</p>
+    <%= link_to new_post_path(branch: branch),
+                class: "btn btn-primary w-100" do %>
+      <i class="fa fa-plus me-2"></i>Create a new post
+    <% end %>
+  </div>
 </div>

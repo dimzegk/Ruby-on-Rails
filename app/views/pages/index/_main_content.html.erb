@@ -1,19 +1,78 @@
-<div id="main-content" class="col-sm-9">
-  <h3 class="page-name"><%= link_to 'Hobby', hobby_posts_path %></h3>
-  <div class="row">
-    <%= render @hobby_posts %>
-    <%= render no_posts_partial_path(@hobby_posts) %>
-  </div><!-- row -->
+<div class="container-xxl page-wrap">
+  <div class="home-quicklinks">
+    <div class="row g-3 g-lg-4 justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <%= link_to hobby_posts_path, class: "ql-card" do %>
+          <i class="fa-solid fa-palette" aria-hidden="true"></i>
+          <div class="ql-text">
+            <span class="ql-eyebrow">Explore</span>
+            <h3>Find a hobby buddy</h3>
+          </div>
+        <% end %>
+      </div>
 
-  <h3 class="page-name"><%= link_to 'Study', study_posts_path %></h3>
-  <div class="row">
-    <%= render @study_posts %>
-    <%= render no_posts_partial_path(@study_posts) %>
-  </div><!-- row -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <%= link_to study_posts_path, class: "ql-card" do %>
+          <i class="fa-solid fa-book" aria-hidden="true"></i>
+          <div class="ql-text">
+            <span class="ql-eyebrow">Learn</span>
+            <h3>Find a study buddy</h3>
+          </div>
+        <% end %>
+      </div>
 
-  <h3 class="page-name"><%= link_to 'Team member', team_posts_path %></h3>
-  <div class="row">
-    <%= render @team_posts %>
-    <%= render no_posts_partial_path(@team_posts) %>
-  </div><!-- row -->
-</div><!-- main_content -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <%= link_to team_posts_path, class: "ql-card" do %>
+          <i class="fa-solid fa-users" aria-hidden="true"></i>
+          <div class="ql-text">
+            <span class="ql-eyebrow">Collaborate</span>
+            <h3>Find a team member</h3>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <section class="home-section">
+    <div class="section-card">
+      <div class="section-header">
+        <h3 class="page-name"><%= link_to 'Hobby', hobby_posts_path %></h3>
+        <%= link_to 'See all', hobby_posts_path, class: 'see-all' %>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <%= render @hobby_posts %>
+        <%= render no_posts_partial_path(@hobby_posts) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="section-card">
+      <div class="section-header">
+        <h3 class="page-name"><%= link_to 'Study', study_posts_path %></h3>
+        <%= link_to 'See all', study_posts_path, class: 'see-all' %>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <%= render @study_posts %>
+        <%= render no_posts_partial_path(@study_posts) %>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="home-section">
+    <div class="section-card">
+      <div class="section-header">
+        <h3 class="page-name"><%= link_to 'Team member', team_posts_path %></h3>
+        <%= link_to 'See all', team_posts_path, class: 'see-all' %>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <%= render @team_posts %>
+        <%= render no_posts_partial_path(@team_posts) %>
+      </div>
+    </div>
+  </section>
+</div>

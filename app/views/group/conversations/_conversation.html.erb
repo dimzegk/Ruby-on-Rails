@@ -1,21 +1,71 @@
-<% add_people_to_conv_list = add_people_to_group_conv_list(conversation) %>
-<% @is_messenger = false %>
-<li class="conversation-window" id="gc<%= conversation.id %>" data-turbolinks-permanent>
-  <div class="panel panel-default" data-gconversation-id="<%= conversation.id %>">
-    <%= render  'group/conversations/conversation/heading',
-                conversation: conversation %> 
-                
-    <%= render  'group/conversations/conversation/select_users',
-                conversation: conversation,
-                add_people_to_conv_list: add_people_to_conv_list %>
-                
-    <div class="panel-body">
-      <%= render  'group/conversations/conversation/messages_list',
-                  conversation: conversation %>
-                  
-      <%= render  'group/conversations/conversation/new_message_form',
-                  conversation: conversation,
-                  user: user %> 
-    </div><!-- panel-body -->
-  </div><!-- panel -->
+<li id="gc<%= conversation.id %>"
+    class="conversation-window panel panel-default"
+    data-gconversation-id="<%= conversation.id %>">
+
+  <%= turbo_stream_from "u#{current_user.id}:gc#{conversation.id}" %>
+
+  <!-- Header -->
+  <div class="conversation-heading d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+      <i class="fa-solid fa-users"></i>
+      <strong id="gc<%= conversation.id %>-title"><%= conversation.name.presence || "Group" %></strong>
+    </div>
+
+    <%= link_to "×",
+                close_group_conversation_path(conversation),
+                method: :post,
+                remote: true,
+                class: "close-conversation",
+                title: "Close" %>
+  </div>
+
+
+  <div class="panel-body">
+    <div class="messages-list" id="gc<%= conversation.id %>-messages">
+      <ul id="gc<%= conversation.id %>-messages_ul">
+        <% conversation.messages.order(:created_at).each do |msg| %>
+          <% sender_id = (msg.respond_to?(:user_id) ? msg.user_id : msg.user&.id) %>
+          <% mine      = sender_id == current_user.id %>
+          <% author    = msg.respond_to?(:user) ? msg.user : User.find_by(id: sender_id) %>
+          <% body      = msg.respond_to?(:content) ? msg.content : (msg.respond_to?(:body) ? msg.body : msg.try(:message)) %>
+
+
+          <% system_msg =
+                (msg.respond_to?(:kind) && msg.kind.to_s == "system") ||
+                (msg.respond_to?(:system?) && msg.system?) ||
+                sender_id.blank? ||
+                body.to_s.match?(/\b(added by|removed by|invited|joined|left|προστέθηκε από|αφαιρέθηκε από|προσκαλέστηκε|μπήκε|έφυγε)\b/i)
+          %>
+
+          <% if system_msg %>
+            <li class="system-notice" data-message-id="<%= msg.id %>"><%= h(body.to_s) %></li>
+          <% else %>
+            <li class="<%= mine ? 'message-sent' : 'message-received' %>"
+                data-message-id="<%= msg.id %>"
+                data-time="<%= (defined?(l) ? l(msg.created_at, format: :time) : msg.created_at.strftime('%H:%M')) rescue msg.created_at.strftime('%H:%M') %>">
+              <% unless mine %>
+                <div class="small text-muted mb-1"><%= author&.name %></div>
+              <% end %>
+              <%= simple_format(h(body.to_s)) %>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+
+   <form id="gc<%= conversation.id %>-form"
+      action="<%= group_conversation_messages_path(conversation) %>"
+      method="post"
+      class="chat-composer"
+      data-turbo="true"
+      autocomplete="off">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+  <textarea name="message[body]"
+            rows="2"
+            class="form-control"
+            placeholder="Write a message…"
+            required></textarea>
+  <button type="submit" class="btn btn-primary">Send</button>
+</form>
+  </div>
 </li>

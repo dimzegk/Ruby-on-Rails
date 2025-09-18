@@ -1,4 +1,4 @@
-// Detect mobile layout and switch Messenger to mobile version
+import $ from "jquery";
 document.addEventListener("turbo:load", () => {
   $(".messenger .col-sm-2 ul").on("click", "a", function () {
     const col_2_width = $('.messenger .col-sm-2').css('width');

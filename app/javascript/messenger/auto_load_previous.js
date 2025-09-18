@@ -1,10 +1,27 @@
+import $ from "jquery";
 document.addEventListener("turbo:load", () => {
-  const $messagesList = $('.conversation .messages-list');
-  const messagesVisible = $messagesList.find('ul li').length > 0;
-  const previousMessagesExist = $messagesList.find('.load-more-messages').length > 0;
+  const $list = $('.conversation .messages-list');
+  if ($list.length === 0) return;
 
-  if (!messagesVisible && previousMessagesExist) {
-    $messagesList.find('.load-more-messages')[0].click();
-    $messagesList.find('.loading-more-messages').hide();
+
+  const $firstLink = $list.find('.js-load-more-messages').first();
+  const hasMessages = $list.find('ul li').length > 0;
+  if (!hasMessages && $firstLink.length && !$firstLink.data('autoloaded')) {
+    $firstLink.data('autoloaded', true);
+    $firstLink[0].click();
+    $list.find('.loading-more-messages').hide();
   }
+
+
+  const ensureScrollbar = () => {
+    const needsMore = $list[0].scrollHeight <= $list.innerHeight();
+    if (needsMore) {
+      const $next = $list.find('.js-load-more-messages').first();
+      if ($next.length) {
+        $next[0].click();
+        setTimeout(ensureScrollbar, 150);
+      }
+    }
+  };
+  setTimeout(ensureScrollbar, 0);
 });

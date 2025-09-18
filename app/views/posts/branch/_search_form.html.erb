@@ -1,12 +1,17 @@
-<div class="col-sm-12">
-  <%= form_tag(send("#{branch}_posts_path"), 
-               :method => "get", 
-               id: "search-form") do %>
-    <i class="fa fa-search" aria-hidden="true"></i>
-    <%= text_field_tag  :search, 
-                        params[:search], 
-                        placeholder: search_placeholder, 
-                        class: "form-control" %>
-    <%= render category_field_partial_path %>
+<%# locals: branch:, search_placeholder: %>
+<div class="col-12">
+  <%= form_tag(send("#{branch}_posts_path"), method: :get, id: "search-form", class: "branch-search") do %>
+    <div class="input-group input-group-lg">
+      <span class="input-group-text bg-white border-end-0">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </span>
+      <%= text_field_tag :search,
+                         params[:search],
+                         placeholder: search_placeholder,
+                         class: "form-control border-start-0",
+                         autocomplete: "off" %>
+      <button class="btn btn-primary px-4" type="submit">Search</button>
+    </div>
+    <%= render 'posts/branch/search_form/category_field' %>
   <% end %>
-</div><!-- col-sm-12 -->
+</div>

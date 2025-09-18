@@ -1,3 +1,4 @@
+import $ from "jquery";
 document.addEventListener('turbo:load', function () {
   var iScrollPos = 0;
   var isLoading = false;
@@ -14,7 +15,6 @@ document.addEventListener('turbo:load', function () {
     var iCurScrollPos = $(this).scrollTop();
 
     if (iCurScrollPos < iScrollPos) {
-      // Scrolling Up
       if (
         iCurScrollPos < 300 &&
         isLoading === false &&

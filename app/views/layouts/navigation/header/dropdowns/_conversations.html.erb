@@ -1,16 +1,44 @@
-<% @all_conversations.each do |conversation| %>
-  <%= render partial: "layouts/navigation/header/dropdowns/conversations/private_conversation",
-             locals: { conversation: conversation, user_id: current_user.id } %>
-<% end %>
+<% ordered = @all_conversations || OrderConversationsService.new(current_user).call %>
 
-<!-- Contact Requests Dropdown -->
-<li class="dropdown">
-  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-    <i class="fa fa-user-o" aria-hidden="true">
-      <span id="unresponded-contact-requests"></span>
-    </i>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <%= render nav_contact_requests_partial_path %>
-  </ul>
-</li>
+<% ordered.each do |item| %>
+  <% if item.is_a?(Private::Conversation) %>
+    <% conv = item %>
+    <% recipient = private_conv_recipient(conv) %>
+
+    <li id="menu-pc<%= conv.id %>" data-type="private" data-id="<%= conv.id %>">
+
+      <a class="dropdown-item navlink-desktop-popup"
+         data-remote="true"
+         data-turbo="false"
+         href="/get_private_conversation.js?id=<%= recipient.id %>">
+        <i class="fa-regular fa-user me-2"></i>
+        <span class="text-truncate"><%= recipient.name %></span>
+      </a>
+
+      <%= link_to open_messenger_path(type: "private", id: recipient.id),
+                  class: "dropdown-item navlink-mobile-messenger" do %>
+        <i class="fa-regular fa-user me-2"></i>
+        <span class="text-truncate"><%= recipient.name %></span>
+      <% end %>
+    </li>
+
+  <% elsif item.is_a?(Group::Conversation) %>
+    <li id="menu-gc<%= item.id %>" data-type="group" data-id="<%= item.id %>">
+      <!-- Desktop: POPUP (remote JS) -->
+      <a class="dropdown-item navlink-desktop-popup"
+         data-remote="true"
+         data-turbo="false"
+         href="/get_group_conversation.js?group_conversation_id=<%= item.id %>">
+        <i class="fa-solid fa-users me-2"></i>
+        <span class="text-truncate"><%= item.name %></span>
+      </a>
+
+
+      <%= link_to open_messenger_path(type: "group", group_conversation_id: item.id),
+                  class: "dropdown-item navlink-mobile-messenger" do %>
+        <i class="fa-solid fa-users me-2"></i>
+        <span class="text-truncate"><%= item.name %></span>
+      <% end %>
+    </li>
+  <% end %>
+<% end %>

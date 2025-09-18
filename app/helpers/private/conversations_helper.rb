@@ -20,7 +20,6 @@ module Private::ConversationsHelper
     end
   end
 
-  # ✅ Διορθωμένο: προσθήκη recipient
   def add_to_contacts_partial_path(contact, recipient)
     if recipient_is_contact?(recipient)
       "shared/empty_partial"
@@ -69,10 +68,23 @@ def create_group_conv_partial_path(contact)
 end
   private
 
-  def recipient_is_contact?(recipient)
-    contacts = current_user.all_active_contacts
-    contacts.any? { |c| c.id == recipient.id }
-  end
+def extract_id(obj)
+  return nil if obj.nil?
+  return obj.id if obj.respond_to?(:id)
+  return obj[:id] if obj.is_a?(Hash) && obj.key?(:id)
+  return obj['id'] if obj.is_a?(Hash) && obj.key?('id')
+  return obj if obj.is_a?(Integer)
+  nil
+end
+
+def recipient_is_contact?(recipient)
+  rid = extract_id(recipient)
+  return false if rid.nil?
+
+  contacts = Array(current_user.all_active_contacts)
+  contact_ids = contacts.map { |c| extract_id(c) }.compact
+  contact_ids.include?(rid)
+end
 
   def non_contact(contact)
     if unaccepted_contact_exists(contact)

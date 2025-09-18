@@ -53,9 +53,11 @@ def open
   @recipient = private_conv_recipient(@conversation)
 
   respond_to do |format|
-    format.js   # αυτό θα ψάξει το open.js.erb
+    format.js  
+    format.html { head :ok }
   end
 end
+
 
     def close
       @conversation_id = params[:id].to_i

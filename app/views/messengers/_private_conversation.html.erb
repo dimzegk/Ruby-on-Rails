@@ -1,16 +1,26 @@
-<% @recipient     = private_conv_recipient(conversation) %>
-<% @contact       = get_contact_record(@recipient) %>
-<% @is_messenger  = true %>
+<% recipient    ||= @recipient %>
+<% conversation ||= @conversation %>
+<%= render "messengers/contact_cta", conversation: conversation, current_user: current_user %>
 
-<%= render partial: 'private/conversations/conversation/request_status',
-           locals: { contact: @contact, recipient: @recipient } %>
+<div class="conversation d-flex flex-column h-100"
+     data-pconversation-id="<%= conversation.id %>">
 
 
-<%= render 'messengers/private_conversation/details' %>
+  <%= turbo_stream_from "u#{current_user.id}:pc#{conversation.id}" %>
 
-<%= render 'private/conversations/conversation/messages_list',
-           conversation: conversation %>
+  <%= render "messengers/private_conversation/details", recipient: recipient %>
 
-<%= render 'private/conversations/conversation/new_message_form',
-           conversation: conversation,
-           user: user %>
+
+  <div class="messages-list flex-grow-1" id="pc<%= conversation.id %>-messages">
+    <%= render "private/conversations/conversation/messages_list",
+               conversation: conversation,
+               current_user: current_user %>
+  </div>
+
+
+  <div class="border-top p-2">
+    <%= render "private/conversations/conversation/new_message_form",
+               conversation: conversation,
+               current_user: current_user %>
+  </div>
+</div>

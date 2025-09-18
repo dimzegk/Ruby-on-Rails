@@ -1,9 +1,8 @@
 class User < ApplicationRecord
-  # Devise authentication
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  # Posts & Messages
+
   has_many :posts, dependent: :destroy
 
   has_many :private_messages,
@@ -20,7 +19,6 @@ class User < ApplicationRecord
            class_name: "Private::Conversation",
            dependent: :destroy
 
-  # === Contacts ===
 
   has_many :contacts_sent, class_name: "Contact", foreign_key: "user_id", dependent: :destroy
   has_many :received_contacts, class_name: "Contact", foreign_key: "contact_id", dependent: :destroy
@@ -41,7 +39,7 @@ class User < ApplicationRecord
            through: :received_contacts,
            source: :user
 
-# === Group Conversations ===
+
 
 has_and_belongs_to_many :group_conversations,
                         class_name: "Group::Conversation",
@@ -53,7 +51,7 @@ has_and_belongs_to_many :group_conversations,
            foreign_key: "user_id",
            dependent: :destroy
 
-  # === Contact Query Methods ===
+
 
   def all_active_contacts
     accepted_sent_contact_requests | accepted_received_contact_requests

@@ -1,8 +1,21 @@
-<div class="conversation-details">
-  <%= link_to (request.referer || messenger_path), class: "text-decoration-none" do %>
-    <i class="fa fa-arrow-left back-to-chats-main" aria-hidden="true"></i>
-  <% end %>
-  <div class="conversation-name">
-    <%= @recipient.name %>
+<%# Locals: conversation, user (optional) %>
+<% viewer      = local_assigns[:user] || current_user %>
+<% conversation = local_assigns[:conversation] || @conversation %>
+<% recipient   = conversation.opposed_user(viewer) %>
+
+<%= form_with url: private_conversation_messages_path(conversation),
+              method: :post,
+              local: false,
+              data: { turbo: false },
+              html: { class: "send-private-message", autocomplete: "off" } do %>
+
+  <div class="input-group">
+    <textarea name="body"
+              class="form-control"
+              rows="1"
+              placeholder="Type a message…"
+              aria-label="Message"
+              required></textarea>
+    <button type="submit" class="btn btn-primary send-message">Send</button>
   </div>
-</div>
+<% end %>

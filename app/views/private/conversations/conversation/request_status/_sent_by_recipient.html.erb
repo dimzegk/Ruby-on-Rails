@@ -1,20 +1,30 @@
-<div class="contact-request-status" 
-     data-user-name="<%= @recipient.name %>">
-  <div class="contact-name">
-    <%= @recipient.name %> sent you a contact request
-  </div>
-  <div class="request-response">
+<% r = local_assigns[:recipient] || @recipient %>
+<% compact = local_assigns[:compact] || false %>
+
+<div class="contact-request-status <%= 'd-inline-flex align-items-center gap-2 p-0 border-0 bg-transparent' if compact %>"
+     data-user-name="<%= h(r&.name) %>">
+
+  <% unless compact %>
+    <div class="contact-name">
+      <%= h(r&.name) %> sent you a contact request
+    </div>
+  <% end %>
+
+  <div class="request-response ms-0">
     <span class="accept-request">
-      <%= link_to "Accept",  
-          contact_path(id: @recipient.id), 
-          remote: true, 
-          method: :put %>
-    </span>  
+      <%= button_to "Accept",
+            contact_path(id: r.id),
+            method: :put,
+            form: { data: { turbo_stream: true } },
+            class: "btn btn-success btn-sm" %>
+    </span>
     <span class="decline-request">
-      <%= link_to "Decline", 
-                  contact_path(id: @recipient.id), 
-                  remote: true, 
-                  method: :delete %>
-    </span>              
+      <%= button_to "Decline",
+            contact_path(id: r.id),
+            method: :delete,
+            form: { data: { turbo_stream: true } },
+            class: "btn btn-outline-secondary btn-sm" %>
+    </span>
   </div>
 </div>
+

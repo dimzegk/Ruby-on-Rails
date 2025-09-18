@@ -1,4 +1,59 @@
-<% @is_messenger = true %>
-<%= render 'messengers/group_conversation/details', conversation: conversation %>
-<%= render 'group/conversations/conversation/messages_list', conversation: conversation %>
-<%= render 'messengers/group_conversation/new_message_form', conversation: conversation %>
+<div class="card h-100">
+  <div class="card-header d-flex align-items-center gap-2">
+    <i class="fa-solid fa-users"></i>
+    <strong><%= conversation.try(:name) || "Group conversation" %></strong>
+  </div>
+
+  <div class="card-body p-0 d-flex flex-column" style="min-height:50vh">
+    <% conv = @conversation || conversation %>
+    <%= turbo_stream_from "u#{current_user.id}:gc#{conv.id}" %>
+
+    <div class="messages-list px-3 py-2">
+      <ul class="list-unstyled mb-0" id="gc<%= conv.id %>-messages_ul">
+        <% conversation.messages.order(:created_at).each do |msg| %>
+          <% sender_id = msg.try(:user_id) || msg.try(:sender_id) || msg.try(:author_id) %>
+          <% sent      = (sender_id == current_user.id) %>
+          <% text      = msg.try(:body) || msg.try(:content) || msg.try(:message) || msg.try(:text) || "" %>
+          <% time_str  = (defined?(l) ? l(msg.created_at, format: :time) : msg.created_at.strftime('%H:%M')) rescue msg.created_at.strftime('%H:%M') %>
+
+
+          <% system_msg =
+               (msg.respond_to?(:kind) && msg.kind.to_s == "system") ||
+               (msg.respond_to?(:system?) && msg.system?) ||
+               sender_id.blank? ||
+               text.to_s.match?(/\b(added by|removed by|invited|joined|left|προστέθηκε από|αφαιρέθηκε από|προσκαλέστηκε|μπήκε|έφυγε)\b/i)
+          %>
+
+          <% if system_msg %>
+            <li class="mb-1 d-grid">
+              <div class="system-notice"><%= h(text) %></div>
+            </li>
+          <% else %>
+            <li class="mb-1 d-grid" data-message-id="<%= msg.id %>">
+              <div class="<%= sent ? 'message-sent ms-auto' : 'message-received me-auto' %>"
+                   data-time="<%= time_str %>">
+                <% unless sent %>
+                  <div class="small text-muted mb-1">
+                    <%= msg.try(:user)&.name %>
+                  </div>
+                <% end %>
+                <%= simple_format(h(text)) %>
+              </div>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+
+
+    <div class="border-top p-2">
+      <%= form_with url: group_conversation_messages_path(conv),
+                    method: :post,
+                    scope:  :message,
+                    html:   { id: "gc#{conv.id}-form", class: "chat-composer d-grid gap-2" } do |f| %>
+        <%= f.text_area :body, rows: 2, class: "form-control", placeholder: "Write a message…", required: true, autocomplete: "off" %>
+        <%= f.submit "Send", class: "btn btn-primary ms-auto" %>
+      <% end %>
+    </div>
+  </div>
+</div>

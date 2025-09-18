@@ -1,2 +1,34 @@
-$('.conversation').replaceWith('<div class="conversation group-conversation"></div>');
-$('.conversation').append("<%= j(render 'messengers/group_conversation', conversation: @conversation) %>");
+(function () {
+  var pane = document.getElementById("messenger-pane");
+  if (pane) {
+    pane.innerHTML = "<%= j render('messengers/group_conversation/group_conversation', conversation: @conversation) %>";
+
+    var list = pane.querySelector(".messages-list");
+    if (list) list.scrollTop = list.scrollHeight;
+
+    var ta = pane.querySelector('textarea[name="message"]');
+    if (ta) ta.focus();
+    return;
+  }
+
+
+  //    Υποθέτουμε ότι το window id είναι "gc#{conversation.id}"
+  var winId = "gc<%= @conversation.id %>";
+  var existing = document.getElementById(winId);
+
+  if (!existing) {
+    var html = "<%= j render('group/conversations/conversation', conversation: @conversation, user: current_user) %>";
+    document.body.insertAdjacentHTML("beforeend", html);
+  }
+
+
+  var win = document.getElementById(winId);
+  if (win) {
+    var list2 = win.querySelector(".messages-list");
+    if (list2) list2.scrollTop = list2.scrollHeight;
+
+
+    if (window.positionChatWindows) window.positionChatWindows();
+    if (window.hideShowChatWindow) window.hideShowChatWindow();
+  }
+})();
